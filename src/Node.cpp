@@ -24,6 +24,12 @@ namespace l3xz
 Node::Node()
 : rclcpp::Node("l3xz::ctrl")
 {
+  _output_pub = create_publisher<l3xz_ctrl::msg::Output>
+    ("/l3xz/ctrl/output", 10);
+
+  _input_sub = create_subscription<l3xz_ctrl::msg::Input>
+    ("/l3xz/ctrl/input", 10, [this](l3xz_ctrl::msg::Input const & msg) { this->onInputUpdate(msg); });
+
   _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist const & msg) { this->onCmdVelUpdate(msg); });
 
@@ -33,6 +39,11 @@ Node::Node()
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
+
+void Node::onInputUpdate(l3xz_ctrl::msg::Input const & /* msg */)
+{
+  /* TODO */
+}
 
 void Node::onCmdVelUpdate(geometry_msgs::msg::Twist const & /* msg */)
 {

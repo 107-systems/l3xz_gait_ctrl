@@ -15,6 +15,9 @@
 
 #include <geometry_msgs/msg/twist.hpp>
 
+#include <l3xz_ctrl/msg/input.hpp>
+#include <l3xz_ctrl/msg/output.hpp>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -32,9 +35,12 @@ public:
   Node();
 
 private:
+  rclcpp::Publisher<l3xz_ctrl::msg::Output>::SharedPtr _output_pub;
+  rclcpp::Subscription<l3xz_ctrl::msg::Input>::SharedPtr _input_sub;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
 
+  void onInputUpdate(l3xz_ctrl::msg::Input const & msg);
   void onCmdVelUpdate(geometry_msgs::msg::Twist const & msg);
   void onCtrlLoopTimerEvent();
 };
