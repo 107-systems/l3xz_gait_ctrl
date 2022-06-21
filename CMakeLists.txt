@@ -28,6 +28,8 @@ add_executable(${L3XZ_CTRL_TARGET}
   src/kinematic/IK_Output.cpp
 
   src/main.cpp
+
+  src/Node.cpp
 )
 #######################################################################################
 target_compile_features(${L3XZ_CTRL_TARGET} PRIVATE cxx_std_17)
