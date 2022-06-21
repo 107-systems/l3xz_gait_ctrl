@@ -13,6 +13,7 @@ find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(orocos_kdl REQUIRED)
+find_package(l3xz_teleop REQUIRED)
 #######################################################################################
 include_directories(${L3XZ_CTRL_TARGET}
   include
@@ -37,7 +38,7 @@ target_compile_features(${L3XZ_CTRL_TARGET} PRIVATE cxx_std_17)
 #######################################################################################
 target_link_libraries(${L3XZ_CTRL_TARGET} orocos-kdl)
 #######################################################################################
-ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp geometry_msgs)
+ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp geometry_msgs l3xz_teleop)
 #######################################################################################
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/input/Input.msg"

@@ -4,7 +4,9 @@
   <name>l3xz_ctrl</name>
   <version>0.0.1</version>
   <description>Hardware-independent gait controller for the L3XZ hexapod robot.</description>
-  <maintainer email="cto@lxrobotics.com">Alexander Entinger</maintainer>
+
+  <maintainer email="consulting@lxrobotics.com">Alexander Entinger</maintainer>
+
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -12,6 +14,7 @@
   <depend>rclcpp</depend>
   <depend>geometry_msgs</depend>
   <depend>rosidl_default_generators</depend>
+  <depend>l3xz_teleop</depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
 
