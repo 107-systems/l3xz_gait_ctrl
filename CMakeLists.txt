@@ -1,16 +1,22 @@
+#######################################################################################
 cmake_minimum_required(VERSION 3.8)
+#######################################################################################
 project(l3xz_ctrl)
-
+set(L3XZ_CTRL_TARGET ${PROJECT_NAME}_node)
+#######################################################################################
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Werror -Wextra -Wpedantic)
 endif()
-
-# find dependencies
+#######################################################################################
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
-
+find_package(rclcpp REQUIRED)
+#######################################################################################
+add_executable(${L3XZ_CTRL_TARGET}
+  src/main.cpp
+)
+#######################################################################################
+ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp)
+#######################################################################################
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
@@ -21,5 +27,10 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
-
+#######################################################################################
+install(TARGETS
+  ${L3XZ_CTRL_TARGET}
+  DESTINATION lib/${PROJECT_NAME})
+#######################################################################################
 ament_package()
+#######################################################################################
