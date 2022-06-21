@@ -18,6 +18,8 @@
 #include <l3xz_ctrl/msg/input.hpp>
 #include <l3xz_ctrl/msg/output.hpp>
 
+#include <l3xz_ctrl/head/HeadController.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -35,6 +37,10 @@ public:
   Node();
 
 private:
+  l3xz::head::Controller _head_ctrl;
+  l3xz::head::ControllerInput _head_ctrl_input;
+  l3xz::head::ControllerOutput _head_ctrl_output;
+
   rclcpp::Publisher<l3xz_ctrl::msg::Output>::SharedPtr _output_pub;
   rclcpp::Subscription<l3xz_ctrl::msg::Input>::SharedPtr _input_sub;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;

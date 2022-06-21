@@ -38,8 +38,8 @@ std::tuple<StateBase *, ControllerOutput> Teleop::update(ControllerInput const &
    */
   static float const MAX_ANGLE_INCREMENT_PER_CYCLE_DEG = 10.0f;
 
-  float const pan_angle_target  = input._pan_angle_actual + (input._teleop_cmd.angular_velocity_head_pan * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
-  float const tilt_angle_target = input._tilt_angle_actual + (input._teleop_cmd.angular_velocity_head_tilt * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
+  float const pan_angle_target  = input.pan_angle () + (input.pan_angular_velocity () * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
+  float const tilt_angle_target = input.tilt_angle() + (input.tilt_angular_velocity() * MAX_ANGLE_INCREMENT_PER_CYCLE_DEG);
 
   return std::tuple(this, ControllerOutput(pan_angle_target, tilt_angle_target));
 }

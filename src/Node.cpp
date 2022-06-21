@@ -23,6 +23,9 @@ namespace l3xz
 
 Node::Node()
 : rclcpp::Node("l3xz::ctrl")
+, _head_ctrl{}
+, _head_ctrl_input{}
+, _head_ctrl_output{}
 {
   _output_pub = create_publisher<l3xz_ctrl::msg::Output>
     ("/l3xz/ctrl/output", 10);
@@ -40,19 +43,26 @@ Node::Node()
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Node::onInputUpdate(l3xz_ctrl::msg::Input const & /* msg */)
+void Node::onInputUpdate(l3xz_ctrl::msg::Input const & msg)
 {
-  /* TODO */
+  _head_ctrl_input.set_pan_angle (msg.head_actual.pan_angle_deg);
+  _head_ctrl_input.set_tilt_angle(msg.head_actual.tilt_angle_deg);
 }
 
-void Node::onCmdVelUpdate(geometry_msgs::msg::Twist const & /* msg */)
+void Node::onCmdVelUpdate(geometry_msgs::msg::Twist const & msg)
 {
-  /* TODO */
+  _head_ctrl_input.set_pan_angular_velocity (msg.angular.x);
+  _head_ctrl_input.set_tilt_angular_velocity(msg.angular.y);
 }
 
 void Node::onCtrlLoopTimerEvent()
 {
-  /* TODO */
+  _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
+
+  l3xz_ctrl::msg::Output msg;
+  msg.head_target.pan_angle_deg  = _head_ctrl_output.pan_angle ();
+  msg.head_target.tilt_angle_deg = _head_ctrl_output.tilt_angle();
+  _output_pub->publish(msg);
 }
 
 /**************************************************************************************

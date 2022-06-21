@@ -22,13 +22,6 @@ namespace l3xz::head::state
 {
 
 /**************************************************************************************
- * CONSTANTS
- **************************************************************************************/
-
-static float constexpr INITIAL_PAN_ANGLE_DEG  = 0.0f;
-static float constexpr INITIAL_TILT_ANGLE_DEG = 0.0f;
-
-/**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
@@ -45,11 +38,11 @@ void Init::onExit()
 std::tuple<StateBase *, ControllerOutput> Init::update(ControllerInput const & input, ControllerOutput const & prev_output)
 {
   /* Check if we have reached the initial tilt angle. */
-  float const tilt_angle_error = fabs(INITIAL_TILT_ANGLE_DEG - input._tilt_angle_actual);
+  float const tilt_angle_error = fabs(INITIAL_TILT_ANGLE_DEG - input.tilt_angle());
   bool  const tilt_is_initial_angle_reached = tilt_angle_error < INITIAL_ANGLE_EPSILON;
 
   /* Check if we have reached the initial pan angle. */
-  float const pan_angle_error = fabs(INITIAL_PAN_ANGLE_DEG - input._pan_angle_actual);
+  float const pan_angle_error = fabs(INITIAL_PAN_ANGLE_DEG - input.pan_angle());
   bool  const pan_is_initial_angle_reached = pan_angle_error < INITIAL_ANGLE_EPSILON;
 
   /* If we have reached the initial angles transition

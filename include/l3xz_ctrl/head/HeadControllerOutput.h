@@ -8,12 +8,6 @@
 #define HEAD_CONTROLLER_OUTPUT_H_
 
 /**************************************************************************************
- * INCLUDES
- **************************************************************************************/
-
-#include <stdexcept>
-
-/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
@@ -27,39 +21,21 @@ namespace l3xz::head
 class ControllerOutput
 {
 public:
-  ControllerOutput(double const pan_angle_target, double const tilt_angle_target)
-  : _pan_angle_target {pan_angle_target}
-  , _tilt_angle_target{tilt_angle_target}
+  ControllerOutput(float const pan_angle,
+                   float const tilt_angle)
+  : _pan_angle {pan_angle}
+  , _tilt_angle{tilt_angle}
   { }
 
-  ControllerOutput(ControllerOutput const & other)
-  : _pan_angle_target {other[Angle::Pan]}
-  , _tilt_angle_target{other[Angle::Tilt]}
-  { }
+  ControllerOutput() : ControllerOutput(0.0f, 0.0f) { }
 
-  enum class Angle {Pan, Tilt};
-
-  inline double operator[](Angle const angle) const
-  {
-    switch(angle)
-    {
-    case Angle::Pan : return _pan_angle_target; break;
-    case Angle::Tilt: return _tilt_angle_target; break;
-    default: throw std::runtime_error("ControllerOutput::operator[] error, invalid parameter for 'angle'"); break;
-    }
-  }
+  inline float pan_angle() const { return _pan_angle; }
+  inline float tilt_angle() const { return _tilt_angle; }
 
 private:
-  double _pan_angle_target,
-         _tilt_angle_target;
+  float _pan_angle,
+        _tilt_angle;
 };
-
-/**************************************************************************************
- * FREE FUNCTION DECLARATION
- **************************************************************************************/
-
-bool operator == (ControllerOutput const & lhs, ControllerOutput const & rhs);
-bool operator != (ControllerOutput const & lhs, ControllerOutput const & rhs);
 
 /**************************************************************************************
  * NAMESPACE

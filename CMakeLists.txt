@@ -23,7 +23,6 @@ add_executable(${L3XZ_CTRL_TARGET}
   src/head/state/Init.cpp
   src/head/state/Teleop.cpp
   src/head/HeadController.cpp
-  src/head/HeadControllerOutput.cpp
 
   src/kinematic/Engine.cpp
   src/kinematic/FK_Output.cpp
