@@ -13,6 +13,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <geometry_msgs/msg/twist.hpp>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -28,6 +30,11 @@ class Node : public rclcpp::Node
 {
 public:
   Node();
+
+private:
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _cmd_vel_sub;
+
+  void onCmdVelUpdate(geometry_msgs::msg::Twist const & msg);
 };
 
 /**************************************************************************************

@@ -24,7 +24,17 @@ namespace l3xz
 Node::Node()
 : rclcpp::Node("l3xz::ctrl")
 {
+  _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
+    ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist const & msg) { this->onCmdVelUpdate(msg); });
+}
 
+/**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void Node::onCmdVelUpdate(geometry_msgs::msg::Twist const & /* msg */)
+{
+  /* TODO */
 }
 
 /**************************************************************************************

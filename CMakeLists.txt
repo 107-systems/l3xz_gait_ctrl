@@ -10,6 +10,7 @@ endif()
 #######################################################################################
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(orocos_kdl REQUIRED)
 #######################################################################################
 include_directories(${L3XZ_CTRL_TARGET}
@@ -36,7 +37,7 @@ target_compile_features(${L3XZ_CTRL_TARGET} PRIVATE cxx_std_17)
 #######################################################################################
 target_link_libraries(${L3XZ_CTRL_TARGET} orocos-kdl)
 #######################################################################################
-ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp)
+ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp geometry_msgs)
 #######################################################################################
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
