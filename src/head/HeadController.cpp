@@ -1,7 +1,7 @@
 /**
- * Copyright (c) 2022 LXHeadControllerics GmbH.
+ * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
  */
 
 /**************************************************************************************

@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2022 LXRobotics GmbH.
+ * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
+ * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ */
+
 #ifndef L3XZ_CTRL_TYPES_TYPES_H_
 #define L3XZ_CTRL_TYPES_TYPES_H_
 
@@ -9,11 +15,8 @@ namespace l3xz
 {
 
 /**************************************************************************************
- * TYPEDED
+ * TYPEDEF
  **************************************************************************************/
-
-namespace l3xz
-{
 
 enum class Joint
 {
