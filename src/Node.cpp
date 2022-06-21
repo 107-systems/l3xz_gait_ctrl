@@ -26,6 +26,8 @@ Node::Node()
 {
   _cmd_vel_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel", 10, [this](geometry_msgs::msg::Twist const & msg) { this->onCmdVelUpdate(msg); });
+
+  _ctrl_loop_timer = create_wall_timer(std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
 }
 
 /**************************************************************************************
@@ -33,6 +35,11 @@ Node::Node()
  **************************************************************************************/
 
 void Node::onCmdVelUpdate(geometry_msgs::msg::Twist const & /* msg */)
+{
+  /* TODO */
+}
+
+void Node::onCtrlLoopTimerEvent()
 {
   /* TODO */
 }
