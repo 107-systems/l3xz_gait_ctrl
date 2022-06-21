@@ -10,10 +10,29 @@ endif()
 #######################################################################################
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(orocos_kdl REQUIRED)
+#######################################################################################
+include_directories(${L3XZ_CTRL_TARGET}
+  include
+  ${orocos_kdl_INCLUDE_DIRS}
+)
 #######################################################################################
 add_executable(${L3XZ_CTRL_TARGET}
+  src/head/state/Init.cpp
+  src/head/state/Teleop.cpp
+  src/head/HeadController.cpp
+  src/head/HeadControllerOutput.cpp
+
+  src/kinematic/Engine.cpp
+  src/kinematic/FK_Output.cpp
+  src/kinematic/IK_Output.cpp
+
   src/main.cpp
 )
+#######################################################################################
+target_compile_features(${L3XZ_CTRL_TARGET} PRIVATE cxx_std_17)
+#######################################################################################
+target_link_libraries(${L3XZ_CTRL_TARGET} orocos-kdl)
 #######################################################################################
 ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp)
 #######################################################################################
