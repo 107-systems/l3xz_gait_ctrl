@@ -21,6 +21,14 @@ include_directories(${L3XZ_CTRL_TARGET}
 )
 #######################################################################################
 add_executable(${L3XZ_CTRL_TARGET}
+  src/gait/state/Standing.cpp
+  src/gait/state/StandUp.cpp
+  src/gait/state/Turning.cpp
+  src/gait/state/Walking.cpp
+  src/gait/GaitController.cpp
+  src/gait/GaitControllerInput.cpp
+  src/gait/GaitControllerOutput.cpp
+
   src/head/state/Init.cpp
   src/head/state/Teleop.cpp
   src/head/HeadController.cpp
