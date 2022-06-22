@@ -51,8 +51,6 @@ private:
   rclcpp::Subscription<l3xz_teleop::msg::Teleop>::SharedPtr _teleop_sub;
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
 
-  void onInputUpdate(l3xz_ctrl::msg::Input const & msg);
-  void onTeleopUpdate(l3xz_teleop::msg::Teleop const & msg);
   void onCtrlLoopTimerEvent();
 
   void updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg);

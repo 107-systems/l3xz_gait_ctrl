@@ -34,10 +34,18 @@ Node::Node()
     ("/l3xz/ctrl/output", 10);
 
   _input_sub = create_subscription<l3xz_ctrl::msg::Input>
-    ("/l3xz/ctrl/input", 10, [this](l3xz_ctrl::msg::Input const & msg) { this->onInputUpdate(msg); });
+    ("/l3xz/ctrl/input", 10, [this](l3xz_ctrl::msg::Input const & msg)
+                             {
+                               updateGaitControllerInput(msg);
+                               updateHeadControllerInput(msg);
+                             });
 
   _teleop_sub = create_subscription<l3xz_teleop::msg::Teleop>
-    ("/l3xz/cmd_vel", 10, [this](l3xz_teleop::msg::Teleop const & msg) { this->onTeleopUpdate(msg); });
+    ("/l3xz/cmd_vel", 10, [this](l3xz_teleop::msg::Teleop const & msg)
+                          {
+                            updateGaitControllerInput(msg);
+                            updateHeadControllerInput(msg);
+                          });
 
   _ctrl_loop_timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
@@ -46,18 +54,6 @@ Node::Node()
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
-
-void Node::onInputUpdate(l3xz_ctrl::msg::Input const & msg)
-{
-  updateGaitControllerInput(msg);
-  updateHeadControllerInput(msg);
-}
-
-void Node::onTeleopUpdate(l3xz_teleop::msg::Teleop const & msg)
-{
-  updateGaitControllerInput(msg);
-  updateHeadControllerInput(msg);
-}
 
 void Node::onCtrlLoopTimerEvent()
 {
