@@ -57,6 +57,8 @@ private:
 
   void updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg);
   void updateGaitControllerInput(l3xz_teleop::msg::Teleop const & msg);
+  void updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg);
+  void updateHeadControllerInput(l3xz_teleop::msg::Teleop const & msg);
 };
 
 /**************************************************************************************
