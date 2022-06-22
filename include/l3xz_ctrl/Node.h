@@ -54,6 +54,9 @@ private:
   void onInputUpdate(l3xz_ctrl::msg::Input const & msg);
   void onTeleopUpdate(l3xz_teleop::msg::Teleop const & msg);
   void onCtrlLoopTimerEvent();
+
+  void updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg);
+  void updateGaitControllerInput(l3xz_teleop::msg::Teleop const & msg);
 };
 
 /**************************************************************************************

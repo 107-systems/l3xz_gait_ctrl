@@ -49,6 +49,34 @@ Node::Node()
 
 void Node::onInputUpdate(l3xz_ctrl::msg::Input const & msg)
 {
+  updateGaitControllerInput(msg);
+
+  _head_ctrl_input.set_pan_angle (msg.head_actual.pan_angle_deg);
+  _head_ctrl_input.set_tilt_angle(msg.head_actual.tilt_angle_deg);
+}
+
+void Node::onTeleopUpdate(l3xz_teleop::msg::Teleop const & msg)
+{
+  updateGaitControllerInput(msg);
+
+  _head_ctrl_input.set_pan_angular_velocity (msg.angular_velocity_head_pan);
+  _head_ctrl_input.set_tilt_angular_velocity(msg.angular_velocity_head_tilt);
+}
+
+void Node::onCtrlLoopTimerEvent()
+{
+  _gait_ctrl_output = _gait_ctrl.update(_gait_ctrl_input, _gait_ctrl_output);
+
+  _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
+
+  l3xz_ctrl::msg::Output msg;
+  msg.head_target.pan_angle_deg  = _head_ctrl_output.pan_angle ();
+  msg.head_target.tilt_angle_deg = _head_ctrl_output.tilt_angle();
+  _output_pub->publish(msg);
+}
+
+void Node::updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg)
+{
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Coxa,  msg.left_front.coxa_angle_deg);
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Femur, msg.left_front.femur_angle_deg);
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Tibia, msg.left_front.tibia_angle_deg);
@@ -72,31 +100,13 @@ void Node::onInputUpdate(l3xz_ctrl::msg::Input const & msg)
   _gait_ctrl_input.set_angle_deg(Leg::RightBack,   Joint::Coxa,  msg.right_back.coxa_angle_deg);
   _gait_ctrl_input.set_angle_deg(Leg::RightBack,   Joint::Femur, msg.right_back.femur_angle_deg);
   _gait_ctrl_input.set_angle_deg(Leg::RightBack,   Joint::Tibia, msg.right_back.tibia_angle_deg);
-
-  _head_ctrl_input.set_pan_angle (msg.head_actual.pan_angle_deg);
-  _head_ctrl_input.set_tilt_angle(msg.head_actual.tilt_angle_deg);
 }
 
-void Node::onTeleopUpdate(l3xz_teleop::msg::Teleop const & msg)
+void Node::updateGaitControllerInput(l3xz_teleop::msg::Teleop const & msg)
 {
   _gait_ctrl_input.set_teleop_linear_velocity_x (msg.linear_velocity_x);
   _gait_ctrl_input.set_teleop_linear_velocity_y (msg.linear_velocity_y);
   _gait_ctrl_input.set_teleop_angular_velocity_z(msg.angular_velocity_z);
-
-  _head_ctrl_input.set_pan_angular_velocity (msg.angular_velocity_head_pan);
-  _head_ctrl_input.set_tilt_angular_velocity(msg.angular_velocity_head_tilt);
-}
-
-void Node::onCtrlLoopTimerEvent()
-{
-  _gait_ctrl_output = _gait_ctrl.update(_gait_ctrl_input, _gait_ctrl_output);
-
-  _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
-
-  l3xz_ctrl::msg::Output msg;
-  msg.head_target.pan_angle_deg  = _head_ctrl_output.pan_angle ();
-  msg.head_target.tilt_angle_deg = _head_ctrl_output.tilt_angle();
-  _output_pub->publish(msg);
 }
 
 /**************************************************************************************
