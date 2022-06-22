@@ -19,6 +19,7 @@
 #include <l3xz_ctrl/msg/output.hpp>
 
 #include <l3xz_ctrl/head/HeadController.h>
+#include <l3xz_ctrl/gait/GaitController.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -37,9 +38,13 @@ public:
   Node();
 
 private:
-  l3xz::head::Controller _head_ctrl;
-  l3xz::head::ControllerInput _head_ctrl_input;
-  l3xz::head::ControllerOutput _head_ctrl_output;
+  gait::Controller _gait_ctrl;
+  gait::ControllerInput _gait_ctrl_input;
+  gait::ControllerOutput _gait_ctrl_output;
+
+  head::Controller _head_ctrl;
+  head::ControllerInput _head_ctrl_input;
+  head::ControllerOutput _head_ctrl_output;
 
   rclcpp::Publisher<l3xz_ctrl::msg::Output>::SharedPtr _output_pub;
   rclcpp::Subscription<l3xz_ctrl::msg::Input>::SharedPtr _input_sub;

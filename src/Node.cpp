@@ -23,6 +23,9 @@ namespace l3xz
 
 Node::Node()
 : rclcpp::Node("l3xz_ctrl")
+, _gait_ctrl{}
+, _gait_ctrl_input{}
+, _gait_ctrl_output{}
 , _head_ctrl{}
 , _head_ctrl_input{}
 , _head_ctrl_output{}
@@ -52,12 +55,18 @@ void Node::onInputUpdate(l3xz_ctrl::msg::Input const & msg)
 
 void Node::onTeleopUpdate(l3xz_teleop::msg::Teleop const & msg)
 {
+  _gait_ctrl_input.set_teleop_linear_velocity_x (msg.linear_velocity_x);
+  _gait_ctrl_input.set_teleop_linear_velocity_y (msg.linear_velocity_y);
+  _gait_ctrl_input.set_teleop_angular_velocity_z(msg.angular_velocity_z);
+
   _head_ctrl_input.set_pan_angular_velocity (msg.angular_velocity_head_pan);
   _head_ctrl_input.set_tilt_angular_velocity(msg.angular_velocity_head_tilt);
 }
 
 void Node::onCtrlLoopTimerEvent()
 {
+  _gait_ctrl_output = _gait_ctrl.update(_gait_ctrl_input, _gait_ctrl_output);
+
   _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
 
   l3xz_ctrl::msg::Output msg;
