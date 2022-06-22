@@ -52,6 +52,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/input/Input.msg"
   "msg/output/Output.msg"
   "msg/Head.msg"
+  "msg/Leg.msg"
 )
 #######################################################################################
 rosidl_target_interfaces(${L3XZ_CTRL_TARGET} ${PROJECT_NAME} "rosidl_typesupport_cpp")

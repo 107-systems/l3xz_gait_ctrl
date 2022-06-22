@@ -64,6 +64,8 @@ public:
 
 
   float get_angle_deg(Leg const leg, Joint const joint) const;
+  void  set_angle_deg(Leg const leg, Joint const joint, float const val);
+
 
 private:
   float _teleop_linear_velocity_x,

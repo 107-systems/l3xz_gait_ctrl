@@ -80,6 +80,11 @@ float ControllerInput::get_angle_deg(Leg const leg, Joint const joint) const
   return _angle_position_map.at(make_key(leg, joint));
 }
 
+void ControllerInput::set_angle_deg(Leg const leg, Joint const joint, float const val)
+{
+  _angle_position_map[make_key(leg, joint)] = val;
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

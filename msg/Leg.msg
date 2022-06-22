@@ -1,0 +1,3 @@
+float32 coxa_angle_deg
+float32 femur_angle_deg
+float32 tibia_angle_deg
