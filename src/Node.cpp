@@ -23,6 +23,7 @@ namespace l3xz
 
 Node::Node()
 : rclcpp::Node("l3xz_ctrl")
+, _kinematic_engine{}
 , _gait_ctrl{}
 , _gait_ctrl_input{}
 , _gait_ctrl_output{}
@@ -57,7 +58,7 @@ Node::Node()
 
 void Node::onCtrlLoopTimerEvent()
 {
-  _gait_ctrl_output = _gait_ctrl.update(_gait_ctrl_input, _gait_ctrl_output);
+  _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
   _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
 

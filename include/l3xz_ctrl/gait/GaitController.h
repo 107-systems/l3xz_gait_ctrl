@@ -11,11 +11,11 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <l3xz_ctrl/kinematic/Engine.h>
+
 #include "state/StateBase.h"
 #include "GaitControllerInput.h"
 #include "GaitControllerOutput.h"
-
-#include <l3xz_ctrl/kinematic/Engine.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -34,11 +34,10 @@ public:
    Controller();
   ~Controller();
 
-  ControllerOutput update(ControllerInput const & input, ControllerOutput const & prev_output);
+  ControllerOutput update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output);
 
 private:
   state::StateBase * _robot_state;
-  kinematic::Engine _kinematic_engine;
 };
 
 /**************************************************************************************

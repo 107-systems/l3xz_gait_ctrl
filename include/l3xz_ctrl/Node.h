@@ -15,6 +15,8 @@
 
 #include <l3xz_teleop/msg/teleop.hpp>
 
+#include <l3xz_ctrl/kinematic/Engine.h>
+
 #include <l3xz_ctrl/msg/input.hpp>
 #include <l3xz_ctrl/msg/output.hpp>
 
@@ -38,6 +40,8 @@ public:
   Node();
 
 private:
+  kinematic::Engine _kinematic_engine;
+
   gait::Controller _gait_ctrl;
   gait::ControllerInput _gait_ctrl_input;
   gait::ControllerOutput _gait_ctrl_output;

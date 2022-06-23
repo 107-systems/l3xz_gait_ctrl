@@ -25,7 +25,6 @@ namespace l3xz::gait
 
 Controller::Controller()
 : _robot_state{new state::Standing()}
-, _kinematic_engine{}
 {
   _robot_state->onEnter();
 }
@@ -39,9 +38,9 @@ Controller::~Controller()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-ControllerOutput Controller::update(ControllerInput const & input, ControllerOutput const & prev_output)
+ControllerOutput Controller::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
-  auto [next_robot_state, next_output] = _robot_state->update(_kinematic_engine, input, prev_output);
+  auto [next_robot_state, next_output] = _robot_state->update(engine, input, prev_output);
     
   if (next_robot_state != _robot_state)
   {
