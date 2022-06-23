@@ -4,6 +4,20 @@
 
 Gait controller for the L3XZ electric/hydraulic hexapod robot.
 
+### How-to-build
+#### Install Dependencies:
+* [orocos-kdl](https://github.com/orocos/orocos_kinematics_dynamics):
+  * How-to-build from [source](https://github.com/orocos/orocos_kinematics_dynamics/blob/master/orocos_kdl/INSTALL.md)
+  * Install a [prebuilt](https://github.com/107-systems/orocos-kdl-debian) Debian package
+#### Build via `colcon`
+```bash
+# Clone this repository into colcon_ws/src.
+git clone https://github.com/107-systems/l3xz_ctrl
+# Invoke 'colcon build' from repository root.
+source /opt/ros/galactic/setup.bash
+colcon build --packages-select l3xz_ctrl
+```
+
 ### How-to-run
 ```bash
 . install/setup.bash
