@@ -4,6 +4,12 @@
 
 Gait controller for the L3XZ electric/hydraulic hexapod robot.
 
+### How-to-run
+```bash
+. install/setup.bash
+ros2 launch l3xz_ctrl ctrl.py
+```
+
 ### Interface Documentation
 #### Subscribed Topics
 | Default name | Type |
