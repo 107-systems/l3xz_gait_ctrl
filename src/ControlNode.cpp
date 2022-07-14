@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_ctrl/Node.h>
+#include <l3xz_ctrl/ControlNode.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,7 +21,7 @@ namespace l3xz
  * CTOR/DTOR
  **************************************************************************************/
 
-Node::Node()
+ControlNode::ControlNode()
 : rclcpp::Node("l3xz_ctrl")
 , _kinematic_engine{}
 , _gait_ctrl{}
@@ -55,7 +55,7 @@ Node::Node()
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Node::onCtrlLoopTimerEvent()
+void ControlNode::onCtrlLoopTimerEvent()
 {
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
@@ -65,7 +65,7 @@ void Node::onCtrlLoopTimerEvent()
   _output_pub->publish(msg);
 }
 
-void Node::updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg)
+void ControlNode::updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg)
 {
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Coxa,  msg.left_front.coxa_angle_deg);
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Femur, msg.left_front.femur_angle_deg);
@@ -92,25 +92,25 @@ void Node::updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg)
   _gait_ctrl_input.set_angle_deg(Leg::RightBack,   Joint::Tibia, msg.right_back.tibia_angle_deg);
 }
 
-void Node::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
+void ControlNode::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
 {
   _gait_ctrl_input.set_teleop_linear_velocity_x (msg->linear.x);
   _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
 }
 
-void Node::updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg)
+void ControlNode::updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg)
 {
   _head_ctrl_input.set_pan_angle (msg.head_actual.pan_angle_deg);
   _head_ctrl_input.set_tilt_angle(msg.head_actual.tilt_angle_deg);
 }
 
-void Node::updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
+void ControlNode::updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
 {
   _head_ctrl_input.set_pan_angular_velocity (msg->angular.y);
   _head_ctrl_input.set_tilt_angular_velocity(msg->angular.z);
 }
 
-l3xz_ctrl::msg::Output Node::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output, head::ControllerOutput head_ctrl_output)
+l3xz_ctrl::msg::Output ControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output, head::ControllerOutput head_ctrl_output)
 {
   l3xz_ctrl::msg::Output msg;
 
@@ -148,4 +148,4 @@ l3xz_ctrl::msg::Output Node::createOutputMessage(gait::ControllerOutput const & 
  * NAMESPACE
  **************************************************************************************/
 
-} /* L3XZ_CTRL_NODE_H_ */
+} /* L3XZ_CTRL_ControlNode_H_ */
