@@ -14,7 +14,6 @@
   <depend>rclcpp</depend>
   <depend>geometry_msgs</depend>
   <depend>rosidl_default_generators</depend>
-  <depend>l3xz_teleop</depend>
 
   <member_of_group>rosidl_interface_packages</member_of_group>
 

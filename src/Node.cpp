@@ -41,12 +41,11 @@ Node::Node()
                                updateHeadControllerInput(msg);
                              });
 
-  _teleop_sub = create_subscription<l3xz_teleop::msg::Teleop>
-    ("/l3xz/cmd_vel", 10, [this](l3xz_teleop::msg::Teleop const & msg)
-                          {
-                            updateGaitControllerInput(msg);
-                            updateHeadControllerInput(msg);
-                          });
+  _robot_sub = create_subscription<geometry_msgs::msg::Twist>
+    ("/l3xz/cmd_vel_robot", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateGaitControllerInput(msg);});
+
+  _head_sub = create_subscription<geometry_msgs::msg::Twist>
+    ("/l3xz/cmd_vel_head", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateHeadControllerInput(msg);});
 
   _ctrl_loop_timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
@@ -93,11 +92,10 @@ void Node::updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg)
   _gait_ctrl_input.set_angle_deg(Leg::RightBack,   Joint::Tibia, msg.right_back.tibia_angle_deg);
 }
 
-void Node::updateGaitControllerInput(l3xz_teleop::msg::Teleop const & msg)
+void Node::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
 {
-  _gait_ctrl_input.set_teleop_linear_velocity_x (msg.linear_velocity_x);
-  _gait_ctrl_input.set_teleop_linear_velocity_y (msg.linear_velocity_y);
-  _gait_ctrl_input.set_teleop_angular_velocity_z(msg.angular_velocity_z);
+  _gait_ctrl_input.set_teleop_linear_velocity_x (msg->linear.x);
+  _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
 }
 
 void Node::updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg)
@@ -106,10 +104,10 @@ void Node::updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg)
   _head_ctrl_input.set_tilt_angle(msg.head_actual.tilt_angle_deg);
 }
 
-void Node::updateHeadControllerInput(l3xz_teleop::msg::Teleop const & msg)
+void Node::updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
 {
-  _head_ctrl_input.set_pan_angular_velocity (msg.angular_velocity_head_pan);
-  _head_ctrl_input.set_tilt_angular_velocity(msg.angular_velocity_head_tilt);
+  _head_ctrl_input.set_pan_angular_velocity (msg->angular.y);
+  _head_ctrl_input.set_tilt_angular_velocity(msg->angular.z);
 }
 
 l3xz_ctrl::msg::Output Node::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output, head::ControllerOutput head_ctrl_output)

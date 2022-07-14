@@ -13,7 +13,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <l3xz_teleop/msg/teleop.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 
 #include <l3xz_ctrl/kinematic/Engine.h>
 
@@ -52,15 +52,16 @@ private:
 
   rclcpp::Publisher<l3xz_ctrl::msg::Output>::SharedPtr _output_pub;
   rclcpp::Subscription<l3xz_ctrl::msg::Input>::SharedPtr _input_sub;
-  rclcpp::Subscription<l3xz_teleop::msg::Teleop>::SharedPtr _teleop_sub;
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _head_sub;
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
 
   void onCtrlLoopTimerEvent();
 
   void updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg);
-  void updateGaitControllerInput(l3xz_teleop::msg::Teleop const & msg);
+  void updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
   void updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg);
-  void updateHeadControllerInput(l3xz_teleop::msg::Teleop const & msg);
+  void updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
 
   static l3xz_ctrl::msg::Output createOutputMessage(gait::ControllerOutput const & gait_ctrl_output, head::ControllerOutput head_ctrl_output);
 };
