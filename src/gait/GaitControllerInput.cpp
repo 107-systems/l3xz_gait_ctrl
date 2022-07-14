@@ -22,7 +22,6 @@ namespace l3xz::gait
  **************************************************************************************/
 
 ControllerInput::ControllerInput(float const teleop_linear_velocity_x,
-                                 float const teleop_linear_velocity_y,
                                  float const teleop_angular_velocity_z,
                                  float const left_front_coxa_angle_actual,
                                  float const left_front_femur_angle_actual,
@@ -43,7 +42,6 @@ ControllerInput::ControllerInput(float const teleop_linear_velocity_x,
                                  float const right_back_femur_angle_actual,
                                  float const right_back_tibia_angle_actual)
 : _teleop_linear_velocity_x{teleop_linear_velocity_x}
-, _teleop_linear_velocity_y{teleop_linear_velocity_y}
 , _teleop_angular_velocity_z{teleop_angular_velocity_z}
 {
   _angle_position_map[make_key(Leg::LeftFront,   Joint::Coxa)]  = left_front_coxa_angle_actual;

@@ -30,7 +30,6 @@ class ControllerInput
 {
 public:
   ControllerInput(float const teleop_linear_velocity_x,
-                  float const teleop_linear_velocity_y,
                   float const teleop_angular_velocity_z,    
                   float const left_front_coxa_angle_actual,
                   float const left_front_femur_angle_actual,
@@ -51,15 +50,13 @@ public:
                   float const right_back_femur_angle_actual,
                   float const right_back_tibia_angle_actual);
 
-  ControllerInput() : ControllerInput(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f) { }
+  ControllerInput() : ControllerInput(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f) { }
 
 
   inline float teleop_linear_velocity_x () const { return _teleop_linear_velocity_x; }
-  inline float teleop_linear_velocity_y () const { return _teleop_linear_velocity_y; }
   inline float teleop_angular_velocity_z() const { return _teleop_angular_velocity_z; }
 
   inline void set_teleop_linear_velocity_x (float const val) { _teleop_linear_velocity_x  = val; }
-  inline void set_teleop_linear_velocity_y (float const val) { _teleop_linear_velocity_y  = val; }
   inline void set_teleop_angular_velocity_z(float const val) { _teleop_angular_velocity_z = val; }
 
 
@@ -69,7 +66,6 @@ public:
 
 private:
   float _teleop_linear_velocity_x,
-        _teleop_linear_velocity_y,
         _teleop_angular_velocity_z;
   std::map<LegJointKey, float> _angle_position_map;
 };
