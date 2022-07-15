@@ -28,10 +28,6 @@ add_executable(${L3XZ_CTRL_TARGET}
   src/gait/GaitControllerInput.cpp
   src/gait/GaitControllerOutput.cpp
 
-  src/head/state/Init.cpp
-  src/head/state/Teleop.cpp
-  src/head/HeadController.cpp
-
   src/kinematic/Engine.cpp
   src/kinematic/FK_Output.cpp
   src/kinematic/IK_Output.cpp
@@ -48,7 +44,6 @@ target_link_libraries(${L3XZ_CTRL_TARGET} orocos-kdl)
 ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp geometry_msgs)
 #######################################################################################
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/HeadAngle.msg"
   "msg/LegAngle.msg"
 )
 #######################################################################################

@@ -1,2 +1,0 @@
-float32 pan_angle_deg
-float32 tilt_angle_deg

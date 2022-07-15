@@ -27,27 +27,15 @@ ControlNode::ControlNode()
 , _gait_ctrl{}
 , _gait_ctrl_input{}
 , _gait_ctrl_output{}
-, _head_ctrl{}
-, _head_ctrl_input{}
-, _head_ctrl_output{}
 {
   _robot_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel_robot", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateGaitControllerInput(msg);});
-
-  _head_sub = create_subscription<geometry_msgs::msg::Twist>
-    ("/l3xz/cmd_vel_head", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateHeadControllerInput(msg);});
 
   _leg_angle_pub = create_publisher<l3xz_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/leg/angle/target", 10);
 
   _leg_angle_sub = create_subscription<l3xz_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/leg/angle/actual", 10, [this](l3xz_ctrl::msg::LegAngle::SharedPtr const msg) { updateGaitControllerInput(msg); });
-
-  _head_angle_pub = create_publisher<l3xz_ctrl::msg::HeadAngle>
-    ("/l3xz/ctrl/head/angle/target", 10);
-
-  _head_angle_sub = create_subscription<l3xz_ctrl::msg::HeadAngle>
-    ("/l3xz/ctrl/head/angle/actual", 10, [this](l3xz_ctrl::msg::HeadAngle::SharedPtr const msg) { updateHeadControllerInput(msg); });
 
   _ctrl_loop_timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
@@ -60,13 +48,6 @@ ControlNode::ControlNode()
 void ControlNode::onCtrlLoopTimerEvent()
 {
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
-
-  _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
-
-  l3xz_ctrl::msg::HeadAngle head_msg;
-  head_msg.pan_angle_deg  = _head_ctrl_output.pan_angle ();
-  head_msg.tilt_angle_deg = _head_ctrl_output.tilt_angle();
-  _head_angle_pub->publish(head_msg);
 
   l3xz_ctrl::msg::LegAngle const leg_msg = createOutputMessage(_gait_ctrl_output);
   _leg_angle_pub->publish(leg_msg);
@@ -103,18 +84,6 @@ void ControlNode::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr
 {
   _gait_ctrl_input.set_teleop_linear_velocity_x (msg->linear.x);
   _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
-}
-
-void ControlNode::updateHeadControllerInput(l3xz_ctrl::msg::HeadAngle::SharedPtr msg)
-{
-  _head_ctrl_input.set_pan_angle (msg->pan_angle_deg);
-  _head_ctrl_input.set_tilt_angle(msg->tilt_angle_deg);
-}
-
-void ControlNode::updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
-{
-  _head_ctrl_input.set_pan_angular_velocity (msg->angular.y);
-  _head_ctrl_input.set_tilt_angular_velocity(msg->angular.z);
 }
 
 l3xz_ctrl::msg::LegAngle ControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output)
