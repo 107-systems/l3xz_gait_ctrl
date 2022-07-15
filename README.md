@@ -2,36 +2,34 @@
 :floppy_disk: `l3xz_ctrl`
 =========================
 
-Gait controller for the L3XZ electric/hydraulic hexapod robot.
+Gait controller for the L3X-Z electric/hydraulic hexapod robot.
 
-### How-to-build
-#### Install Dependencies:
+#### How-to-build
+##### Install Dependencies:
 * [orocos-kdl](https://github.com/orocos/orocos_kinematics_dynamics):
   * How-to-build from [source](https://github.com/orocos/orocos_kinematics_dynamics/blob/master/orocos_kdl/INSTALL.md)
   * Install a [prebuilt](https://github.com/107-systems/orocos-kdl-debian) Debian package
-#### Build via `colcon`
+##### Build via `colcon`
 ```bash
-# Clone this repository into colcon_ws/src.
-git clone https://github.com/107-systems/l3xz_ctrl
-# Invoke 'colcon build' from repository root.
-source /opt/ros/galactic/setup.bash
-colcon build --packages-select l3xz_ctrl
+colcon_ws/src$ git clone https://github.com/107-systems/l3xz_ctrl
+colcon_ws$ source /opt/ros/galactic/setup.bash
+colcon_ws$ colcon build --packages-select l3xz_ctrl
 ```
 
-### How-to-run
+#### How-to-run
 ```bash
-. install/setup.bash
-ros2 launch l3xz_ctrl ctrl.py
+colcon_ws$ . install/setup.bash
+colcon_ws$ ros2 launch l3xz_ctrl ctrl.py
 ```
 
-### Interface Documentation
-#### Subscribed Topics
+#### Interface Documentation
+##### Subscribed Topics
 | Default name | Type |
 |:-:|:-:|
-| `/l3xz/ctrl/input` | [`l3xz_ctrl/Input`](msg/input/Input.msg) |
-| `/l3xz/cmd_vel` | `l3xz_teleop/Teleop` |
+| `/l3xz/cmd_vel_robot` | [`geometry_msgs/Twist`](http://docs.ros.org/en/api/geometry_msgs/html/msg/Twist.html) |
+| `/l3xz/ctrl/leg/angle/actual` | [`l3xz_ctrl/LegAngle`](msg/LegAngle.msg) |
 
-#### Published Topics
+##### Published Topics
 | Default name | Type |
 |:-:|:-:|
-| `/l3xz/ctrl/output` | [`l3xz_ctrl/Output`](msg/output/Output.msg) |
+| `/l3xz/ctrl/leg/angle/target` | [`l3xz_ctrl/LegAngle`](msg/LegAngle.msg) |
