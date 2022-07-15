@@ -1,8 +1,8 @@
 #######################################################################################
 cmake_minimum_required(VERSION 3.8)
 #######################################################################################
-project(l3xz_ctrl)
-set(L3XZ_CTRL_TARGET ${PROJECT_NAME}_node)
+project(l3xz_gait_ctrl)
+set(L3XZ_GAIT_CTRL_TARGET ${PROJECT_NAME}_node)
 #######################################################################################
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Werror -Wextra -Wpedantic)
@@ -14,12 +14,12 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(orocos_kdl REQUIRED)
 #######################################################################################
-include_directories(${L3XZ_CTRL_TARGET}
+include_directories(${L3XZ_GAIT_CTRL_TARGET}
   include
   ${orocos_kdl_INCLUDE_DIRS}
 )
 #######################################################################################
-add_executable(${L3XZ_CTRL_TARGET}
+add_executable(${L3XZ_GAIT_CTRL_TARGET}
   src/gait/state/Standing.cpp
   src/gait/state/StandUp.cpp
   src/gait/state/Turning.cpp
@@ -37,17 +37,17 @@ add_executable(${L3XZ_CTRL_TARGET}
   src/main.cpp
 )
 #######################################################################################
-target_compile_features(${L3XZ_CTRL_TARGET} PRIVATE cxx_std_17)
+target_compile_features(${L3XZ_GAIT_CTRL_TARGET} PRIVATE cxx_std_17)
 #######################################################################################
-target_link_libraries(${L3XZ_CTRL_TARGET} orocos-kdl)
+target_link_libraries(${L3XZ_GAIT_CTRL_TARGET} orocos-kdl)
 #######################################################################################
-ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp geometry_msgs)
+ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp geometry_msgs)
 #######################################################################################
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LegAngle.msg"
 )
 #######################################################################################
-rosidl_target_interfaces(${L3XZ_CTRL_TARGET} ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(${L3XZ_GAIT_CTRL_TARGET} ${PROJECT_NAME} "rosidl_typesupport_cpp")
 #######################################################################################
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -61,7 +61,7 @@ if(BUILD_TESTING)
 endif()
 #######################################################################################
 install(TARGETS
-  ${L3XZ_CTRL_TARGET}
+  ${L3XZ_GAIT_CTRL_TARGET}
   DESTINATION lib/${PROJECT_NAME}
 )
 install(DIRECTORY

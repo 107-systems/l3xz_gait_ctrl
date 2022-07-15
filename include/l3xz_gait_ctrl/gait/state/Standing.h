@@ -4,14 +4,14 @@
  * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
+#ifndef STANDING_STATE_H_
+#define STANDING_STATE_H_
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_gait_ctrl/gait/state/Standing.h>
-
-#include <l3xz_gait_ctrl/gait/state/Turning.h>
-#include <l3xz_gait_ctrl/gait/state/Walking.h>
+#include "StateBase.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,35 +21,22 @@ namespace l3xz::gait::state
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void Standing::onEnter()
+class Standing : public StateBase
 {
-  printf("[INFO] Standing ENTER");
-}
-
-void Standing::onExit()
-{
-  printf("[INFO] Standing EXIT");
-}
-
-std::tuple<StateBase *, ControllerOutput> Standing::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)
-{
-  ControllerOutput next_output = prev_output;
-  if (std::abs(input.teleop_linear_velocity_x()) > 0.2f)
-  {
-    return std::tuple(new Walking(input.teleop_linear_velocity_x() > 0), next_output);
-  }
-  if (std::abs(input.teleop_angular_velocity_z()) > 0.2f)
-  {
-    return std::tuple(new Turning(input.teleop_angular_velocity_z() > 0), next_output);
-  }
-  return std::tuple(this, next_output);
-}
+public:
+  virtual ~Standing() { }
+  virtual void onEnter() override;
+  virtual void onExit() override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
+};
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* l3xz::gait::state */
+
+#endif /* STANDING_STATE_H_ */

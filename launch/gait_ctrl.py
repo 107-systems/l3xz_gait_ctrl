@@ -4,10 +4,10 @@ from launch_ros.actions import Node
 def generate_launch_description():
   return LaunchDescription([
     Node(
-      package='l3xz_ctrl',
+      package='l3xz_gait_ctrl',
       namespace='l3xz',
-      executable='l3xz_ctrl_node',
-      name='l3xz_ctrl',
+      executable='l3xz_gait_ctrl_node',
+      name='l3xz_gait_ctrl',
       output='screen',
       parameters=[]
     )

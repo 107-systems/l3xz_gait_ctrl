@@ -1,54 +1,53 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef L3XZ_CTRL_TYPES_LEG_JOINT_H_
-#define L3XZ_CTRL_TYPES_LEG_JOINT_H_
+#ifndef KINEMATIC_IK_OUTPUT_H_
+#define KINEMATIC_IK_OUTPUT_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <tuple>
-
-#include "Leg.h"
-#include "Joint.h"
+#include <stdexcept>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace l3xz::kinematic
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * CLASS DECLARATION
  **************************************************************************************/
 
-typedef std::tuple<Leg, Joint> LegJointKey;
-
-struct leg_joint_map_key_equal : public std::binary_function<LegJointKey, LegJointKey, bool>
+class IK_Output
 {
-  bool operator()(const LegJointKey & v0, const LegJointKey & v1) const
-  {
-    return (
-            std::get<0>(v0) == std::get<0>(v1) &&
-            std::get<1>(v0) == std::get<1>(v1)
-           );
-  }
+public:
+  IK_Output(double const coxa_angle_rad, double const femur_angle_rad, double const tibia_angle_rad);
+
+
+  inline double coxa_angle_deg () const { return _coxa_angle_deg; }
+  inline double femur_angle_deg() const { return _femur_angle_deg; }
+  inline double tibia_angle_deg() const { return _tibia_angle_deg; }
+
+
+  std::string toStr() const;
+
+
+private:
+  double const _coxa_angle_deg;
+  double const _femur_angle_deg;
+  double const _tibia_angle_deg;
 };
 
-inline LegJointKey make_key(Leg const leg, Joint const joint)
-{
-  return std::tuple(leg, joint);
-}
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* l3xz::kinematic */
 
-#endif /* L3XZ_CTRL_TYPES_LEG_JOINT_H_ */
+#endif /* KINEMATIC_IK_OUTPUT_H_ */

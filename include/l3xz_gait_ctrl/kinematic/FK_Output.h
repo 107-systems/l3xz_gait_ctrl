@@ -1,31 +1,19 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef KINEMATIC_ENGINE_H_
-#define KINEMATIC_ENGINE_H_
+#ifndef KINEMATIC_FK_OUTPUT_H_
+#define KINEMATIC_FK_OUTPUT_H_
 
 /**************************************************************************************
- * INCLUDES
+ * INCLUDE
  **************************************************************************************/
 
-#include <memory>
-#include <optional>
+#include <string>
 
-#include "FK_Input.h"
-#include "FK_Output.h"
-
-#include "IK_Input.h"
-#include "IK_Output.h"
-
-#include <kdl/chain.hpp>
-#include <kdl/chainfksolver.hpp>
-#include <kdl/chainfksolverpos_recursive.hpp>
-#include <kdl/chainiksolver.hpp>
-#include <kdl/chainiksolverpos_nr.hpp>
-#include <kdl/chainiksolvervel_pinv.hpp>
+#include <kdl/frames.hpp>
 
 /**************************************************************************************
  * NAMESPACE
@@ -38,20 +26,21 @@ namespace l3xz::kinematic
  * CLASS DECLARATION
  **************************************************************************************/
 
-class Engine
+class FK_Output
 {
 public:
+  FK_Output(KDL::Frame const & tibia_tip_frame);
 
-  Engine();
+  inline double tibia_tip_x() const { return _tibia_tip_x; }
+  inline double tibia_tip_y() const { return _tibia_tip_y; }
+  inline double tibia_tip_z() const { return _tibia_tip_z; }
 
-  std::optional<FK_Output> fk_solve(FK_Input const & fk_input) const;
-  std::optional<IK_Output> ik_solve(IK_Input const & ik_input) const;
+  std::string toStr() const;
 
 private:
-  KDL::Chain _leg_chain;
-  std::unique_ptr<KDL::ChainFkSolverPos_recursive> _fksolver;
-  std::unique_ptr<KDL::ChainIkSolverVel_pinv> _iksolver_vel;
-  std::unique_ptr<KDL::ChainIkSolverPos_NR> _iksolver_pos;
+  double const _tibia_tip_x;
+  double const _tibia_tip_y;
+  double const _tibia_tip_z;
 };
 
 /**************************************************************************************
@@ -60,4 +49,4 @@ private:
 
 } /* l3xz::kinematic */
 
-#endif /* KINEMATIC_ENGINE_H_ */
+#endif /* KINEMATIC_FK_OUTPUT_H_ */

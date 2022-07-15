@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2022 LXControllerics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_ctrl/gait/GaitController.h>
+#include <l3xz_gait_ctrl/gait/GaitController.h>
 
-#include <l3xz_ctrl/gait/state/Standing.h>
+#include <l3xz_gait_ctrl/gait/state/Standing.h>
 
 /**************************************************************************************
  * NAMESPACE

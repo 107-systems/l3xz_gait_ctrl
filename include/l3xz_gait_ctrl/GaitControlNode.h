@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef L3XZ_CTRL_NODE_H_
-#define L3XZ_CTRL_NODE_H_
+#ifndef l3xz_gait_ctrl_NODE_H_
+#define l3xz_gait_ctrl_NODE_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -15,11 +15,11 @@
 
 #include <geometry_msgs/msg/twist.hpp>
 
-#include <l3xz_ctrl/kinematic/Engine.h>
+#include <l3xz_gait_ctrl/kinematic/Engine.h>
 
-#include <l3xz_ctrl/msg/leg_angle.hpp>
+#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 
-#include <l3xz_ctrl/gait/GaitController.h>
+#include <l3xz_gait_ctrl/gait/GaitController.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -45,16 +45,16 @@ private:
   gait::ControllerOutput _gait_ctrl_output;
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
-  rclcpp::Publisher<l3xz_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
-  rclcpp::Subscription<l3xz_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
+  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
+  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
 
   void onCtrlLoopTimerEvent();
 
-  void updateGaitControllerInput(l3xz_ctrl::msg::LegAngle::SharedPtr const msg);
+  void updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg);
   void updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
 
-  static l3xz_ctrl::msg::LegAngle createOutputMessage(gait::ControllerOutput const & gait_ctrl_output);
+  static l3xz_gait_ctrl::msg::LegAngle createOutputMessage(gait::ControllerOutput const & gait_ctrl_output);
 };
 
 /**************************************************************************************
@@ -63,4 +63,4 @@ private:
 
 } /* l3xz */
 
-#endif /* L3XZ_CTRL_NODE_H_ */
+#endif /* l3xz_gait_ctrl_NODE_H_ */

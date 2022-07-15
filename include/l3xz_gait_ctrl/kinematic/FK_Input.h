@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef KINEMATIC_FK_OUTPUT_H_
-#define KINEMATIC_FK_OUTPUT_H_
+#ifndef KINEMATIC_FK_INPUT_H_
+#define KINEMATIC_FK_INPUT_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <string>
+#include <cmath>
 
-#include <kdl/frames.hpp>
+#include <kdl/jntarray.hpp>
 
 /**************************************************************************************
  * NAMESPACE
@@ -26,21 +26,21 @@ namespace l3xz::kinematic
  * CLASS DECLARATION
  **************************************************************************************/
 
-class FK_Output
+class FK_Input
 {
 public:
-  FK_Output(KDL::Frame const & tibia_tip_frame);
+  FK_Input(double const coxa_angle_deg, double const femur_angle_deg, double const tibia_angle_deg)
+  {
+    _joint_positions = KDL::JntArray(3);
+    _joint_positions(0) = coxa_angle_deg  * M_PI / 180.0;
+    _joint_positions(1) = femur_angle_deg * M_PI / 180.0;
+    _joint_positions(2) = tibia_angle_deg * M_PI / 180.0;
+  }
 
-  inline double tibia_tip_x() const { return _tibia_tip_x; }
-  inline double tibia_tip_y() const { return _tibia_tip_y; }
-  inline double tibia_tip_z() const { return _tibia_tip_z; }
-
-  std::string toStr() const;
+  inline KDL::JntArray joint_positions() const { return _joint_positions; }
 
 private:
-  double const _tibia_tip_x;
-  double const _tibia_tip_y;
-  double const _tibia_tip_z;
+  KDL::JntArray _joint_positions;
 };
 
 /**************************************************************************************
@@ -49,4 +49,4 @@ private:
 
 } /* l3xz::kinematic */
 
-#endif /* KINEMATIC_FK_OUTPUT_H_ */
+#endif /* KINEMATIC_FK_INPUT_H_ */

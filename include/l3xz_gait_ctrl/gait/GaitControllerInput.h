@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
 #ifndef GAIT_CONTROLLER_STATE_INPUT_H_
@@ -13,7 +13,7 @@
 
 #include <map>
 
-#include <l3xz_ctrl/types/LegJoint.h>
+#include <l3xz_gait_ctrl/types/LegJoint.h>
 
 /**************************************************************************************
  * NAMESPACE

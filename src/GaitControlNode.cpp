@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_ctrl/GaitControlNode.h>
+#include <l3xz_gait_ctrl/GaitControlNode.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -31,11 +31,11 @@ GaitControlNode::GaitControlNode()
   _robot_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel_robot", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateGaitControllerInput(msg);});
 
-  _leg_angle_pub = create_publisher<l3xz_ctrl::msg::LegAngle>
+  _leg_angle_pub = create_publisher<l3xz_gait_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/leg/angle/target", 10);
 
-  _leg_angle_sub = create_subscription<l3xz_ctrl::msg::LegAngle>
-    ("/l3xz/ctrl/leg/angle/actual", 10, [this](l3xz_ctrl::msg::LegAngle::SharedPtr const msg) { updateGaitControllerInput(msg); });
+  _leg_angle_sub = create_subscription<l3xz_gait_ctrl::msg::LegAngle>
+    ("/l3xz/ctrl/leg/angle/actual", 10, [this](l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg) { updateGaitControllerInput(msg); });
 
   _ctrl_loop_timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
@@ -49,11 +49,11 @@ void GaitControlNode::onCtrlLoopTimerEvent()
 {
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
-  l3xz_ctrl::msg::LegAngle const leg_msg = createOutputMessage(_gait_ctrl_output);
+  l3xz_gait_ctrl::msg::LegAngle const leg_msg = createOutputMessage(_gait_ctrl_output);
   _leg_angle_pub->publish(leg_msg);
 }
 
-void GaitControlNode::updateGaitControllerInput(l3xz_ctrl::msg::LegAngle::SharedPtr const msg)
+void GaitControlNode::updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg)
 {
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Coxa,  msg->coxa_angle_deg [0]);
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Femur, msg->femur_angle_deg[0]);
@@ -86,9 +86,9 @@ void GaitControlNode::updateGaitControllerInput(geometry_msgs::msg::Twist::Share
   _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
 }
 
-l3xz_ctrl::msg::LegAngle GaitControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output)
+l3xz_gait_ctrl::msg::LegAngle GaitControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output)
 {
-  l3xz_ctrl::msg::LegAngle msg;
+  l3xz_gait_ctrl::msg::LegAngle msg;
 
   msg.coxa_angle_deg    [0] = gait_ctrl_output.get_angle_deg(Leg::LeftFront,   Joint::Coxa);
   msg.femur_angle_deg   [0] = gait_ctrl_output.get_angle_deg(Leg::LeftFront,   Joint::Femur);

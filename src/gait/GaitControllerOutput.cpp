@@ -1,19 +1,19 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_ctrl/gait/GaitControllerOutput.h>
+#include <l3xz_gait_ctrl/gait/GaitControllerOutput.h>
 
 #include <sstream>
 #include <stdexcept>
 
-#include <l3xz_ctrl/types/LegJoint.h>
+#include <l3xz_gait_ctrl/types/LegJoint.h>
 
 /**************************************************************************************
  * NAMESPACE

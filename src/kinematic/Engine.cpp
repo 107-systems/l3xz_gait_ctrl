@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_ctrl/kinematic/Engine.h>
+#include <l3xz_gait_ctrl/kinematic/Engine.h>
 
 #include <kdl/frames_io.hpp>
 
