@@ -50,7 +50,7 @@ ament_target_dependencies(${L3XZ_CTRL_TARGET} rclcpp geometry_msgs)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/input/Input.msg"
   "msg/output/Output.msg"
-  "msg/Head.msg"
+  "msg/HeadAngle.msg"
   "msg/Leg.msg"
 )
 #######################################################################################

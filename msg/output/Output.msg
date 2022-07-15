@@ -1,4 +1,3 @@
-Head head_target
 Leg left_front
 Leg left_middle
 Leg left_back

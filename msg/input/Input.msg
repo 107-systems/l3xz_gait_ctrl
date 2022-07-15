@@ -1,4 +1,3 @@
-Head head_actual
 Leg left_front
 Leg left_middle
 Leg left_back

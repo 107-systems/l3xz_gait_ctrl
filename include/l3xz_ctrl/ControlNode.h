@@ -17,6 +17,7 @@
 
 #include <l3xz_ctrl/kinematic/Engine.h>
 
+#include <l3xz_ctrl/msg/head_angle.hpp>
 #include <l3xz_ctrl/msg/input.hpp>
 #include <l3xz_ctrl/msg/output.hpp>
 
@@ -54,16 +55,20 @@ private:
   rclcpp::Subscription<l3xz_ctrl::msg::Input>::SharedPtr _input_sub;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _head_sub;
+
+  rclcpp::Publisher<l3xz_ctrl::msg::HeadAngle>::SharedPtr _head_angle_pub;
+  rclcpp::Subscription<l3xz_ctrl::msg::HeadAngle>::SharedPtr _head_angle_sub;
+
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
 
   void onCtrlLoopTimerEvent();
 
   void updateGaitControllerInput(l3xz_ctrl::msg::Input const & msg);
   void updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
-  void updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg);
+  void updateHeadControllerInput(l3xz_ctrl::msg::HeadAngle::SharedPtr const msg);
   void updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
 
-  static l3xz_ctrl::msg::Output createOutputMessage(gait::ControllerOutput const & gait_ctrl_output, head::ControllerOutput head_ctrl_output);
+  static l3xz_ctrl::msg::Output createOutputMessage(gait::ControllerOutput const & gait_ctrl_output);
 };
 
 /**************************************************************************************

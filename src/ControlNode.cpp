@@ -38,7 +38,6 @@ ControlNode::ControlNode()
     ("/l3xz/ctrl/input", 10, [this](l3xz_ctrl::msg::Input const & msg)
                              {
                                updateGaitControllerInput(msg);
-                               updateHeadControllerInput(msg);
                              });
 
   _robot_sub = create_subscription<geometry_msgs::msg::Twist>
@@ -46,6 +45,15 @@ ControlNode::ControlNode()
 
   _head_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel_head", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateHeadControllerInput(msg);});
+
+  _head_angle_sub = create_subscription<l3xz_ctrl::msg::HeadAngle>
+    ("/l3xz/ctrl/head/angle/actual", 10, [this](l3xz_ctrl::msg::HeadAngle::SharedPtr const msg)
+                                         {
+                                            updateHeadControllerInput(msg);
+                                         });
+
+  _head_angle_pub = create_publisher<l3xz_ctrl::msg::HeadAngle>
+    ("/l3xz/ctrl/head/angle/target", 10);
 
   _ctrl_loop_timer = create_wall_timer
     (std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
@@ -61,7 +69,12 @@ void ControlNode::onCtrlLoopTimerEvent()
 
   _head_ctrl_output = _head_ctrl.update(_head_ctrl_input, _head_ctrl_output);
 
-  l3xz_ctrl::msg::Output const msg = createOutputMessage(_gait_ctrl_output, _head_ctrl_output);
+  l3xz_ctrl::msg::HeadAngle head_msg;
+  head_msg.pan_angle_deg  = _head_ctrl_output.pan_angle ();
+  head_msg.tilt_angle_deg = _head_ctrl_output.tilt_angle();
+  _head_angle_pub->publish(head_msg);
+
+  l3xz_ctrl::msg::Output const msg = createOutputMessage(_gait_ctrl_output);
   _output_pub->publish(msg);
 }
 
@@ -98,10 +111,10 @@ void ControlNode::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr
   _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
 }
 
-void ControlNode::updateHeadControllerInput(l3xz_ctrl::msg::Input const & msg)
+void ControlNode::updateHeadControllerInput(l3xz_ctrl::msg::HeadAngle::SharedPtr msg)
 {
-  _head_ctrl_input.set_pan_angle (msg.head_actual.pan_angle_deg);
-  _head_ctrl_input.set_tilt_angle(msg.head_actual.tilt_angle_deg);
+  _head_ctrl_input.set_pan_angle (msg->pan_angle_deg);
+  _head_ctrl_input.set_tilt_angle(msg->tilt_angle_deg);
 }
 
 void ControlNode::updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
@@ -110,12 +123,9 @@ void ControlNode::updateHeadControllerInput(geometry_msgs::msg::Twist::SharedPtr
   _head_ctrl_input.set_tilt_angular_velocity(msg->angular.z);
 }
 
-l3xz_ctrl::msg::Output ControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output, head::ControllerOutput head_ctrl_output)
+l3xz_ctrl::msg::Output ControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output)
 {
   l3xz_ctrl::msg::Output msg;
-
-  msg.head_target.pan_angle_deg    = head_ctrl_output.pan_angle ();
-  msg.head_target.tilt_angle_deg   = head_ctrl_output.tilt_angle();
 
   msg.left_front.coxa_angle_deg    = gait_ctrl_output.get_angle_deg(Leg::LeftFront,   Joint::Coxa);
   msg.left_front.femur_angle_deg   = gait_ctrl_output.get_angle_deg(Leg::LeftFront,   Joint::Femur);
