@@ -10,7 +10,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <l3xz_ctrl/ControlNode.h>
+#include <l3xz_ctrl/GaitControlNode.h>
 
 /**************************************************************************************
  * MAIN
@@ -20,7 +20,7 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
 
-  auto node = std::make_shared<l3xz::ControlNode>();
+  auto node = std::make_shared<l3xz::GaitControlNode>();
 
   try
   {
