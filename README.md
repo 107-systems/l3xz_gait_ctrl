@@ -1,6 +1,7 @@
 <a href="https://107-systems.org/"><img align="right" src="https://raw.githubusercontent.com/107-systems/.github/main/logo/107-systems.png" width="15%"></a>
 :floppy_disk: `l3xz_gait_ctrl`
 ==============================
+[![Build Status](https://github.com/107-systems/l3xz_gait_ctrl/actions/workflows/ros2.yml/badge.svg)](https://github.com/107-systems/l3xz_gait_ctrl/actions/workflows/ros2.yml)
 [![Spell Check status](https://github.com/107-systems/l3xz_gait_ctrl/actions/workflows/spell-check.yml/badge.svg)](https://github.com/107-systems/l3xz_gait_ctrl/actions/workflows/spell-check.yml)
 
 Gait controller for the L3X-Z electric/hydraulic hexapod robot.
