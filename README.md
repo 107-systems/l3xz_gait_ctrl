@@ -18,7 +18,7 @@ Gait controller for the L3X-Z electric/hydraulic hexapod robot.
 ##### Build via `colcon`
 ```bash
 colcon_ws/src$ git clone https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl
-colcon_ws$ source /opt/ros/galactic/setup.bash
+colcon_ws$ source /opt/ros/humble/setup.bash
 colcon_ws$ colcon build --packages-select l3xz_gait_ctrl
 ```
 
