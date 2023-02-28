@@ -11,6 +11,8 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
 
 #include "../GaitControllerInput.h"
@@ -30,10 +32,14 @@ namespace l3xz::gait::state
 class StateBase
 {
 public:
+  StateBase(rclcpp::Logger const logger) : _logger{logger} { }
   virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) = 0;
+
+protected:
+  rclcpp::Logger const _logger;
 };
 
 /**************************************************************************************

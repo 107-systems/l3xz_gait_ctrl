@@ -42,7 +42,7 @@ struct LegTraits final
 class Walking : public StateBase
 {
 public:
-  explicit Walking(const bool forward) : _phase_increment(forward ? PHASE_INCREMENT_ABS : -PHASE_INCREMENT_ABS) {}
+  explicit Walking(rclcpp::Logger const logger, const bool forward) : StateBase(logger), _phase_increment(forward ? PHASE_INCREMENT_ABS : -PHASE_INCREMENT_ABS) {}
 
   virtual void onEnter() override;
   virtual void onExit() override;

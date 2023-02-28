@@ -59,7 +59,7 @@ std::tuple<StateBase *, ControllerOutput> Turning::update(kinematic::Engine cons
     next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().tibia_angle_deg());
   }
   _phase += PHASE_INCREMENT;
-  return std::tuple((_phase < 1.0F) ? this : static_cast<StateBase*>(new Standing), next_output);
+  return std::tuple((_phase < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger)), next_output);
 }
 
 /**************************************************************************************

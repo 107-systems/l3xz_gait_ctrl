@@ -67,7 +67,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
    */
   if (std::abs(input.teleop_linear_velocity_x()) > 0.2f ||
       std::abs(input.teleop_angular_velocity_z()) > 0.2f)
-    return std::tuple(new StandUp(), next_output);
+    return std::tuple(new StandUp(_logger), next_output);
 
   return std::tuple(this, next_output);
 }

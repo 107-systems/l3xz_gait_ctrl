@@ -27,6 +27,7 @@ namespace l3xz::gait::state
 class Init : public StateBase
 {
 public:
+  Init(rclcpp::Logger const logger) : StateBase(logger) { }
   virtual ~Init() { }
   virtual void onEnter() override;
   virtual void onExit() override;

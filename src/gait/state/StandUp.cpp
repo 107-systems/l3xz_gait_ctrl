@@ -98,7 +98,7 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
   if (!all_target_angles_reached)
     return std::tuple(this, next_output);
 
-  return std::tuple(new Standing(), next_output);
+  return std::tuple(new Standing(_logger), next_output);
 }
 
 /**************************************************************************************
