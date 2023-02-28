@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
 
-#include <l3xz_gait_ctrl/gait/state/Standing.h>
+#include <l3xz_gait_ctrl/gait/state/Init.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -24,7 +24,7 @@ namespace l3xz::gait
  **************************************************************************************/
 
 Controller::Controller()
-: _robot_state{new state::Standing()}
+: _robot_state{new state::Init()}
 {
   _robot_state->onEnter();
 }

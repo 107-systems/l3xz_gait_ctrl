@@ -1,40 +1,42 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
-#ifndef L3XZ_GAIT_CTRL_JOINTLIST_H
-#define L3XZ_GAIT_CTRL_JOINTLIST_H
+#ifndef INIT_STATE_H_
+#define INIT_STATE_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <list>
-
-#include <l3xz_gait_ctrl/types/Joint.h>
+#include "StateBase.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace l3xz::gait::state
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * CLASS DECLARATION
  **************************************************************************************/
 
-static std::list<Joint> const JOINT_LIST =
+class Init : public StateBase
 {
-  Joint::Coxa, Joint::Femur, Joint::Tibia
+public:
+  virtual ~Init() { }
+  virtual void onEnter() override;
+  virtual void onExit() override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 };
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* l3xz::gait::state */
 
-#endif /* L3XZ_GAIT_CTRL_JOINTLIST_H */
+#endif /* INIT_STATE_H_ */
