@@ -26,7 +26,7 @@ namespace l3xz
 
 Node::Node()
 : rclcpp::Node("l3xz_gait_ctrl")
-, _kinematic_engine{}
+, _kinematic_engine{get_logger()}
 , _gait_ctrl{get_logger()}
 , _gait_ctrl_input{}
 , _gait_ctrl_output{}

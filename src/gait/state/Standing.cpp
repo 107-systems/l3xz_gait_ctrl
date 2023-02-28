@@ -26,12 +26,12 @@ namespace l3xz::gait::state
 
 void Standing::onEnter()
 {
-  printf("[INFO] Standing ENTER");
+  RCLCPP_INFO(_logger, "Standing ENTER");
 }
 
 void Standing::onExit()
 {
-  printf("[INFO] Standing EXIT");
+  RCLCPP_INFO(_logger, "Standing EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Standing::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)

@@ -31,7 +31,8 @@ static KDL::Vector const TIBIA_TO_TIP  ( 25.0, 0.0, -205.0);
  * CTOR/DTOR
  **************************************************************************************/
 
-Engine::Engine()
+Engine::Engine(rclcpp::Logger const logger)
+: _logger{logger}
 {
   /* MX-28 Front/Right z-axis rotation */
   _leg_chain.addSegment(KDL::Segment(KDL::Joint(KDL::Joint::RotZ)));
@@ -75,16 +76,16 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
   }
   if (auto const rc = _fksolver->JntToCart(joint_positions_in, tibia_tip_frame); rc < 0)
   {
-    printf("[ERROR] Engine::fk_solve, ChainFkSolverPos_recursive::JntToCart failed with %d", rc);
+    RCLCPP_ERROR(_logger, "Engine::fk_solve, ChainFkSolverPos_recursive::JntToCart failed with %d", rc);
     return std::nullopt;
   }
 
   std::stringstream msg;
   msg << "FK results" << std::endl << tibia_tip_frame;
-  printf("[INFO] %s", msg.str().c_str());
+  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
   
   FK_Output const fk_output(tibia_tip_frame);
-  printf("[INFO] %s", fk_output.toStr().c_str());
+  RCLCPP_INFO(_logger, "%s", fk_output.toStr().c_str());
   return fk_output;
 }
 
@@ -112,14 +113,14 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
   msg << "IK results" << std::endl;
   for (size_t r = 0; r < joint_positions_out.rows(); r++)
     msg << joint_positions_out(r) << std::endl;
-  printf("[INFO] %s", msg.str().c_str());
+  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
 
   IK_Output const ik_output(
     +joint_positions_out(0),
     -joint_positions_out(1),
     +joint_positions_out(2)
   );
-  printf("[INFO] %s", ik_output.toStr().c_str());
+  RCLCPP_INFO(_logger, "%s", ik_output.toStr().c_str());
   return ik_output;
 }
 

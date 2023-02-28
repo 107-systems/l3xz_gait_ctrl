@@ -43,12 +43,12 @@ const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
 
 void Walking::onEnter()
 {
-  printf("[INFO] Walking ENTER");
+  RCLCPP_INFO(_logger, "Walking ENTER");
 }
 
 void Walking::onExit()
 {
-  printf("[INFO] Walking EXIT");
+  RCLCPP_INFO(_logger, "Walking EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -64,7 +64,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
                                                coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
     if (!ik_output.has_value()) {
-      printf("[ERROR] Walking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      RCLCPP_INFO(_logger, "Walking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
@@ -73,7 +73,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
     next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().tibia_angle_deg());
     if (leg == Leg::LeftFront)
     {
-      printf("[INFO] Walking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
+      RCLCPP_INFO(_logger, "Walking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
     }
   }
   _phase += _phase_increment;

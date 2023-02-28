@@ -27,12 +27,12 @@ namespace l3xz::gait::state
 
 void Init::onEnter()
 {
-  printf("[INFO] Init ENTER");
+  RCLCPP_INFO(_logger, "Init ENTER");
 }
 
 void Init::onExit()
 {
-  printf("[INFO] Init EXIT");
+  RCLCPP_INFO(_logger, "Init EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -53,7 +53,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
 
     if (!coxa_is_initial_angle_reached) {
-      printf("[INFO] l3xz::gait::state::Init::update: leg %d coxa target angle not reached", int(leg));
+      RCLCPP_INFO(_logger, "l3xz::gait::state::Init::update: leg %d coxa target angle not reached", int(leg));
       all_target_angles_reached = false;
     }
   }

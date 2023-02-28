@@ -28,12 +28,12 @@ namespace l3xz::gait::state
 
 void Turning::onEnter()
 {
-  printf("[INFO] Turning ENTER");
+  RCLCPP_INFO(_logger, "Turning ENTER");
 }
 
 void Turning::onExit()
 {
-  printf("[INFO] Turning EXIT");
+  RCLCPP_INFO(_logger, "Turning EXIT");
 }
 
 std::tuple<StateBase *, ControllerOutput> Turning::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
@@ -50,7 +50,7 @@ std::tuple<StateBase *, ControllerOutput> Turning::update(kinematic::Engine cons
                                                coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
     if (!ik_output.has_value()) {
-      printf("[ERROR] Turning::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      RCLCPP_ERROR(_logger, "Turning::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
