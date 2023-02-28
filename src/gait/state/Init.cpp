@@ -65,7 +65,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
     return std::tuple(this, next_output);
 
   /* If the robot control joystick is moved after
-   * initialisation is complete then we shall transition
+   * initialization is complete then we shall transition
    * into the stand-up state.
    */
   if (std::abs(input.teleop_linear_velocity_x()) > 0.2f ||
