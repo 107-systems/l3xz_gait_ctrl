@@ -27,6 +27,7 @@ Node::Node()
 , _gait_ctrl{}
 , _gait_ctrl_input{}
 , _gait_ctrl_output{}
+, _prev_ctrl_loop_timepoint{std::chrono::steady_clock::now()}
 {
   _robot_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel_robot", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateGaitControllerInput(msg);});
@@ -38,15 +39,27 @@ Node::Node()
     ("/l3xz/ctrl/leg/angle/actual", 10, [this](l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg) { updateGaitControllerInput(msg); });
 
   _ctrl_loop_timer = create_wall_timer
-    (std::chrono::milliseconds(50), [this]() { this->onCtrlLoopTimerEvent(); });
+    (std::chrono::milliseconds(CTRL_LOOP_RATE.count()), [this]() { this->ctrl_loop(); });
 }
 
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Node::onCtrlLoopTimerEvent()
+void Node::ctrl_loop()
 {
+  auto const now = std::chrono::steady_clock::now();
+  auto const ctrl_loop_rate = (now - _prev_ctrl_loop_timepoint);
+  if (ctrl_loop_rate > (CTRL_LOOP_RATE + std::chrono::milliseconds(1)))
+    RCLCPP_WARN_THROTTLE(get_logger(),
+                         *get_clock(),
+                         1000,
+                         "ctrl_loop should be called every %ld ms, but is %ld ms instead",
+                         CTRL_LOOP_RATE.count(),
+                         std::chrono::duration_cast<std::chrono::milliseconds>(ctrl_loop_rate).count());
+  _prev_ctrl_loop_timepoint = now;
+
+
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
   l3xz_gait_ctrl::msg::LegAngle const leg_msg = createOutputMessage(_gait_ctrl_output);

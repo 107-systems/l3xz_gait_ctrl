@@ -11,6 +11,8 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <chrono>
+
 #include <rclcpp/rclcpp.hpp>
 
 #include <geometry_msgs/msg/twist.hpp>
@@ -47,9 +49,11 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
   rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
   rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
-  rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
 
-  void onCtrlLoopTimerEvent();
+  std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;
+  static std::chrono::milliseconds constexpr CTRL_LOOP_RATE{10};
+  rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
+  void ctrl_loop();
 
   void updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg);
   void updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
