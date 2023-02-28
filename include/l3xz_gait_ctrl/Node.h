@@ -52,6 +52,9 @@ private:
   std::map<LegJointKey,
            rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
 
+  std::map<LegJointKey,
+           rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_targed_pub;
+
   std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;
   static std::chrono::milliseconds constexpr CTRL_LOOP_RATE{10};
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;

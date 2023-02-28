@@ -44,13 +44,17 @@ Node::Node()
   for (auto leg : LEG_LIST)
     for (auto joint : JOINT_LIST)
     {
-      std::stringstream topic;
-      topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/actual";
+      std::stringstream angle_actual_sub_topic, angle_target_pub_topic;
+      angle_actual_sub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/actual";
+      angle_target_pub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/target";
+
       _angle_actual_sub[make_key(leg, joint)] = create_subscription<std_msgs::msg::Float32>
-        (topic.str(),
+        (angle_actual_sub_topic.str(),
          1,
-         [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data); }
+         [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data * 180.0f / M_PI); }
          );
+
+      _angle_targed_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
     }
 
   _ctrl_loop_timer = create_wall_timer
@@ -77,8 +81,15 @@ void Node::ctrl_loop()
 
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
-  //l3xz_gait_ctrl::msg::LegAngle const leg_msg = createOutputMessage(_gait_ctrl_output);
-  //_leg_angle_pub->publish(leg_msg);
+
+  for (auto leg : LEG_LIST)
+    for (auto joint : JOINT_LIST)
+    {
+      /* Publish all target angles. */
+      std_msgs::msg::Float32 angle_target_msg;
+      angle_target_msg.data = _gait_ctrl_output.get_angle_deg(leg, joint) * M_PI / 180.0f;
+      _angle_targed_pub[make_key(leg, joint)]->publish(angle_target_msg);
+    }
 }
 
 /**************************************************************************************
