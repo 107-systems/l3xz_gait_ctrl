@@ -4,14 +4,11 @@
  * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef l3xz_gait_ctrl_TYPES_LEG_H_
-#define l3xz_gait_ctrl_TYPES_LEG_H_
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <string>
+#include <l3xz_gait_ctrl/types/Leg.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,29 +18,25 @@ namespace l3xz
 {
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-enum class Leg
-{
-  LeftFront,
-  LeftMiddle,
-  LeftBack,
-  RightFront,
-  RightMiddle,
-  RightBack
-};
-
-/**************************************************************************************
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-std::string LegToStr(Leg const leg);
+std::string LegToStr(Leg const leg)
+{
+  switch(leg)
+  {
+    case Leg::LeftFront:   return std::string("left_front");   break;
+    case Leg::LeftMiddle:  return std::string("left_middle");  break;
+    case Leg::LeftBack:    return std::string("left_back");    break;
+    case Leg::RightFront:  return std::string("right_front");  break;
+    case Leg::RightMiddle: return std::string("right_middle"); break;
+    case Leg::RightBack:   return std::string("right_back");   break;
+    default: __builtin_unreachable();
+  }
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* l3xz */
-
-#endif /* l3xz_gait_ctrl_TYPES_LEG_H_ */

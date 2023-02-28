@@ -10,6 +10,7 @@ endif()
 #######################################################################################
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(orocos_kdl REQUIRED)
@@ -32,6 +33,9 @@ add_executable(${L3XZ_GAIT_CTRL_TARGET}
   src/kinematic/FK_Output.cpp
   src/kinematic/IK_Output.cpp
 
+  src/types/Joint.cpp
+  src/types/Leg.cpp
+
   src/Node.cpp
 
   src/main.cpp
@@ -47,7 +51,7 @@ target_compile_features(${L3XZ_GAIT_CTRL_TARGET} PRIVATE cxx_std_17)
 #######################################################################################
 target_link_libraries(${L3XZ_GAIT_CTRL_TARGET} orocos-kdl ${cpp_typesupport_target})
 #######################################################################################
-ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp geometry_msgs)
+ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp std_msgs geometry_msgs)
 #######################################################################################
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

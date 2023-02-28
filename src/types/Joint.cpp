@@ -4,14 +4,11 @@
  * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef l3xz_gait_ctrl_TYPES_LEG_H_
-#define l3xz_gait_ctrl_TYPES_LEG_H_
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <string>
+#include <l3xz_gait_ctrl/types/Joint.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,29 +18,22 @@ namespace l3xz
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * FUNCTION DEFINITION
  **************************************************************************************/
 
-enum class Leg
+std::string JointToStr(Joint const joint)
 {
-  LeftFront,
-  LeftMiddle,
-  LeftBack,
-  RightFront,
-  RightMiddle,
-  RightBack
-};
-
-/**************************************************************************************
- * FUNCTION DECLARATION
- **************************************************************************************/
-
-std::string LegToStr(Leg const leg);
+  switch(joint)
+  {
+    case Joint::Coxa:  return std::string("coxa");  break;
+    case Joint::Femur: return std::string("femur"); break;
+    case Joint::Tibia: return std::string("tibia"); break;
+    default: __builtin_unreachable();
+  }
+}
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* l3xz */
-
-#endif /* l3xz_gait_ctrl_TYPES_LEG_H_ */

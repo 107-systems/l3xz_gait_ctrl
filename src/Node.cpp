@@ -10,6 +10,9 @@
 
 #include <l3xz_gait_ctrl/Node.h>
 
+#include <l3xz_gait_ctrl/const/LegList.h>
+#include <l3xz_gait_ctrl/const/JointList.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -31,6 +34,18 @@ Node::Node()
 {
   _robot_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel_robot", 10, [this](geometry_msgs::msg::Twist::SharedPtr const msg) { updateGaitControllerInput(msg);});
+
+  for (auto leg : LEG_LIST)
+    for (auto joint : JOINT_LIST)
+    {
+      std::stringstream topic;
+      topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/actual";
+      _angle_actual_sub[make_key(leg, joint)] = create_subscription<std_msgs::msg::Float32>
+        (topic.str(),
+         1,
+         [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data); }
+         );
+    }
 
   _leg_angle_pub = create_publisher<l3xz_gait_ctrl::msg::LegAngle>
     ("/l3xz/ctrl/leg/angle/target", 10);

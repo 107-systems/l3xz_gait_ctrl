@@ -15,6 +15,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <std_msgs/msg/float32.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
@@ -22,6 +23,8 @@
 #include <l3xz_gait_ctrl/msg/leg_angle.hpp>
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
+
+#include <l3xz_gait_ctrl/types/LegJoint.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -47,6 +50,10 @@ private:
   gait::ControllerOutput _gait_ctrl_output;
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
+
+  std::map<LegJointKey,
+           rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
+
   rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
   rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
 
