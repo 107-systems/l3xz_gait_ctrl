@@ -10,8 +10,8 @@ endif()
 #######################################################################################
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
 find_package(orocos_kdl REQUIRED)
 #######################################################################################
 include_directories(${L3XZ_GAIT_CTRL_TARGET}
@@ -20,6 +20,7 @@ include_directories(${L3XZ_GAIT_CTRL_TARGET}
 )
 #######################################################################################
 add_executable(${L3XZ_GAIT_CTRL_TARGET}
+  src/gait/state/Init.cpp
   src/gait/state/Standing.cpp
   src/gait/state/StandUp.cpp
   src/gait/state/Turning.cpp
@@ -32,22 +33,19 @@ add_executable(${L3XZ_GAIT_CTRL_TARGET}
   src/kinematic/FK_Output.cpp
   src/kinematic/IK_Output.cpp
 
-  src/GaitControlNode.cpp
+  src/types/Joint.cpp
+  src/types/Leg.cpp
+
+  src/Node.cpp
 
   src/main.cpp
 )
 #######################################################################################
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/LegAngle.msg"
-)
-#######################################################################################
-rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
-#######################################################################################
 target_compile_features(${L3XZ_GAIT_CTRL_TARGET} PRIVATE cxx_std_17)
 #######################################################################################
-target_link_libraries(${L3XZ_GAIT_CTRL_TARGET} orocos-kdl ${cpp_typesupport_target})
+target_link_libraries(${L3XZ_GAIT_CTRL_TARGET} orocos-kdl)
 #######################################################################################
-ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp geometry_msgs)
+ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp std_msgs geometry_msgs)
 #######################################################################################
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

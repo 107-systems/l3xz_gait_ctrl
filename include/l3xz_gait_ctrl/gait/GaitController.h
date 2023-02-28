@@ -11,6 +11,8 @@
  * INCLUDES
  **************************************************************************************/
 
+#include <rclcpp/rclcpp.hpp>
+
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
 
 #include "state/StateBase.h"
@@ -31,12 +33,14 @@ namespace l3xz::gait
 class Controller
 {
 public:
-   Controller();
+   Controller(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock);
   ~Controller();
 
   ControllerOutput update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output);
 
 private:
+  rclcpp::Logger const _logger;
+  rclcpp::Clock::SharedPtr const _clock;
   state::StateBase * _robot_state;
 };
 

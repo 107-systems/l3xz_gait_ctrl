@@ -14,6 +14,8 @@
 #include <memory>
 #include <optional>
 
+#include <rclcpp/rclcpp.hpp>
+
 #include "FK_Input.h"
 #include "FK_Output.h"
 
@@ -42,12 +44,13 @@ class Engine
 {
 public:
 
-  Engine();
+  Engine(rclcpp::Logger const logger);
 
   std::optional<FK_Output> fk_solve(FK_Input const & fk_input) const;
   std::optional<IK_Output> ik_solve(IK_Input const & ik_input) const;
 
 private:
+  rclcpp::Logger const _logger;
   KDL::Chain _leg_chain;
   std::unique_ptr<KDL::ChainFkSolverPos_recursive> _fksolver;
   std::unique_ptr<KDL::ChainIkSolverVel_pinv> _iksolver_vel;

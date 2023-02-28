@@ -15,7 +15,7 @@ namespace l3xz::gait::state
 class Turning : public StateBase
 {
 public:
-  explicit Turning(const bool left) : _left(left) { }
+  explicit Turning(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, const bool left) : StateBase(logger, clock), _left(left) { }
   virtual void onEnter() override;
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;

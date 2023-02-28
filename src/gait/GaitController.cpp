@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
 
-#include <l3xz_gait_ctrl/gait/state/Standing.h>
+#include <l3xz_gait_ctrl/gait/state/Init.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -23,8 +23,10 @@ namespace l3xz::gait
  * CTOR/DTOR
  **************************************************************************************/
 
-Controller::Controller()
-: _robot_state{new state::Standing()}
+Controller::Controller(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
+: _logger{logger}
+, _clock{clock}
+, _robot_state{new state::Init(_logger, _clock)}
 {
   _robot_state->onEnter();
 }

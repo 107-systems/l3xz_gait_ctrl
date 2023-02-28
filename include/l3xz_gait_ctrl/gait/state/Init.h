@@ -1,49 +1,43 @@
 /**
  * Copyright (c) 2022 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
-#ifndef l3xz_gait_ctrl_TYPES_LEG_H_
-#define l3xz_gait_ctrl_TYPES_LEG_H_
+#ifndef INIT_STATE_H_
+#define INIT_STATE_H_
 
 /**************************************************************************************
- * INCLUDE
+ * INCLUDES
  **************************************************************************************/
 
-#include <string>
+#include "StateBase.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz
+namespace l3xz::gait::state
 {
 
 /**************************************************************************************
- * TYPEDEF
+ * CLASS DECLARATION
  **************************************************************************************/
 
-enum class Leg
+class Init : public StateBase
 {
-  LeftFront,
-  LeftMiddle,
-  LeftBack,
-  RightFront,
-  RightMiddle,
-  RightBack
+public:
+  Init(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
+  virtual ~Init() { }
+  virtual void onEnter() override;
+  virtual void onExit() override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 };
 
 /**************************************************************************************
- * FUNCTION DECLARATION
- **************************************************************************************/
-
-std::string LegToStr(Leg const leg);
-
-/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz */
+} /* l3xz::gait::state */
 
-#endif /* l3xz_gait_ctrl_TYPES_LEG_H_ */
+#endif /* INIT_STATE_H_ */
