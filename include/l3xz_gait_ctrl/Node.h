@@ -20,8 +20,6 @@
 
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
 
-#include <l3xz_gait_ctrl/msg/leg_angle.hpp>
-
 #include <l3xz_gait_ctrl/gait/GaitController.h>
 
 #include <l3xz_gait_ctrl/types/LegJoint.h>
@@ -54,18 +52,10 @@ private:
   std::map<LegJointKey,
            rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
 
-  rclcpp::Publisher<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_pub;
-  rclcpp::Subscription<l3xz_gait_ctrl::msg::LegAngle>::SharedPtr _leg_angle_sub;
-
   std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;
   static std::chrono::milliseconds constexpr CTRL_LOOP_RATE{10};
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
   void ctrl_loop();
-
-  void updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg);
-  void updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg);
-
-  static l3xz_gait_ctrl::msg::LegAngle createOutputMessage(gait::ControllerOutput const & gait_ctrl_output);
 };
 
 /**************************************************************************************
