@@ -32,7 +32,7 @@ add_executable(${L3XZ_GAIT_CTRL_TARGET}
   src/kinematic/FK_Output.cpp
   src/kinematic/IK_Output.cpp
 
-  src/GaitControlNode.cpp
+  src/Node.cpp
 
   src/main.cpp
 )

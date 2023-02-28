@@ -8,7 +8,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <l3xz_gait_ctrl/GaitControlNode.h>
+#include <l3xz_gait_ctrl/Node.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,7 +21,7 @@ namespace l3xz
  * CTOR/DTOR
  **************************************************************************************/
 
-GaitControlNode::GaitControlNode()
+Node::Node()
 : rclcpp::Node("l3xz_gait_ctrl")
 , _kinematic_engine{}
 , _gait_ctrl{}
@@ -45,7 +45,7 @@ GaitControlNode::GaitControlNode()
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-void GaitControlNode::onCtrlLoopTimerEvent()
+void Node::onCtrlLoopTimerEvent()
 {
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
@@ -53,7 +53,7 @@ void GaitControlNode::onCtrlLoopTimerEvent()
   _leg_angle_pub->publish(leg_msg);
 }
 
-void GaitControlNode::updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg)
+void Node::updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::SharedPtr const msg)
 {
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Coxa,  msg->coxa_angle_deg [0]);
   _gait_ctrl_input.set_angle_deg(Leg::LeftFront,   Joint::Femur, msg->femur_angle_deg[0]);
@@ -80,13 +80,13 @@ void GaitControlNode::updateGaitControllerInput(l3xz_gait_ctrl::msg::LegAngle::S
   _gait_ctrl_input.set_angle_deg(Leg::RightBack,   Joint::Tibia, msg->tibia_angle_deg[5]);
 }
 
-void GaitControlNode::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
+void Node::updateGaitControllerInput(geometry_msgs::msg::Twist::SharedPtr const msg)
 {
   _gait_ctrl_input.set_teleop_linear_velocity_x (msg->linear.x);
   _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
 }
 
-l3xz_gait_ctrl::msg::LegAngle GaitControlNode::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output)
+l3xz_gait_ctrl::msg::LegAngle Node::createOutputMessage(gait::ControllerOutput const & gait_ctrl_output)
 {
   l3xz_gait_ctrl::msg::LegAngle msg;
 

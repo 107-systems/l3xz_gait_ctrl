@@ -32,10 +32,10 @@ namespace l3xz
  * CLASS DECLARATION
  **************************************************************************************/
 
-class GaitControlNode : public rclcpp::Node
+class Node : public rclcpp::Node
 {
 public:
-  GaitControlNode();
+  Node();
 
 private:
   kinematic::Engine _kinematic_engine;
