@@ -27,7 +27,7 @@ namespace l3xz::gait::state
 class StandUp : public StateBase
 {
 public:
-  StandUp(rclcpp::Logger const logger) : StateBase(logger) { }
+  StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
   virtual ~StandUp() { }
   virtual void onEnter() override;
   virtual void onExit() override;

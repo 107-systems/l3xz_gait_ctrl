@@ -23,9 +23,10 @@ namespace l3xz::gait
  * CTOR/DTOR
  **************************************************************************************/
 
-Controller::Controller(rclcpp::Logger const logger)
+Controller::Controller(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
 : _logger{logger}
-, _robot_state{new state::Init(_logger)}
+, _clock{clock}
+, _robot_state{new state::Init(_logger, _clock)}
 {
   _robot_state->onEnter();
 }

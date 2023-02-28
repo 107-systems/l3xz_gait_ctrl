@@ -77,7 +77,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
     }
   }
   _phase += _phase_increment;
-  return std::tuple((std::abs(_phase) < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger)), next_output);
+  return std::tuple((std::abs(_phase) < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger, _clock)), next_output);
 }
 
 [[nodiscard]] KDL::Vector Walking::sampleFootTrajectory(const LegTraits lt, const float phase)

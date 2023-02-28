@@ -33,13 +33,14 @@ namespace l3xz::gait
 class Controller
 {
 public:
-   Controller(rclcpp::Logger const logger);
+   Controller(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock);
   ~Controller();
 
   ControllerOutput update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output);
 
 private:
   rclcpp::Logger const _logger;
+  rclcpp::Clock::SharedPtr const _clock;
   state::StateBase * _robot_state;
 };
 

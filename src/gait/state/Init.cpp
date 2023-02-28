@@ -53,7 +53,10 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
     bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
 
     if (!coxa_is_initial_angle_reached) {
-      RCLCPP_INFO(_logger, "l3xz::gait::state::Init::update: leg %d coxa target angle not reached", int(leg));
+      RCLCPP_INFO_THROTTLE(_logger,
+                           *_clock,
+                           1000,
+                           "l3xz::gait::state::Init::update: %s coxa target angle not reached", LegToStr(leg).c_str());
       all_target_angles_reached = false;
     }
   }
@@ -67,7 +70,7 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
    */
   if (std::abs(input.teleop_linear_velocity_x()) > 0.2f ||
       std::abs(input.teleop_angular_velocity_z()) > 0.2f)
-    return std::tuple(new StandUp(_logger), next_output);
+    return std::tuple(new StandUp(_logger, _clock), next_output);
 
   return std::tuple(this, next_output);
 }

@@ -32,7 +32,7 @@ namespace l3xz::gait::state
 class StateBase
 {
 public:
-  StateBase(rclcpp::Logger const logger) : _logger{logger} { }
+  StateBase(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : _logger{logger}, _clock{clock} { }
   virtual ~StateBase() { }
   virtual void onEnter() { }
   virtual void onExit() { }
@@ -40,6 +40,7 @@ public:
 
 protected:
   rclcpp::Logger const _logger;
+  rclcpp::Clock::SharedPtr const _clock;
 };
 
 /**************************************************************************************
