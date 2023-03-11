@@ -17,15 +17,18 @@ Gait controller for the L3X-Z electric/hydraulic hexapod robot.
   * Install a [prebuilt](https://github.com/107-systems/orocos-kdl-debian) Debian package
 ##### Build via `colcon`
 ```bash
-colcon_ws/src$ git clone https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl
-colcon_ws$ source /opt/ros/humble/setup.bash
-colcon_ws$ colcon build --packages-select l3xz_gait_ctrl
+cd $COLCON_WS/src
+git clone https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl
+cd $COLCON_WS
+source /opt/ros/humble/setup.bash
+colcon build --packages-select l3xz_gait_ctrl
 ```
 
 #### How-to-run
 ```bash
-colcon_ws$ . install/setup.bash
-colcon_ws$ ros2 launch l3xz_gait_ctrl gait_ctrl.py
+cd $COLCON_WS
+. install/setup.bash
+ros2 launch l3xz_gait_ctrl gait_ctrl.py
 ```
 
 #### Interface Documentation
