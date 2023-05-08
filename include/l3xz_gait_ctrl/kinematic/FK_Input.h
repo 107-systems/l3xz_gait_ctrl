@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022 LXRobotics GmbH.
+ * Copyright (c) 2023 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
  * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
