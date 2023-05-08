@@ -9,6 +9,7 @@ def generate_launch_description():
       executable='l3xz_gait_ctrl_node',
       name='l3xz_gait_ctrl',
       output='screen',
+      emulate_tty=True,
       parameters=[]
     )
   ])
