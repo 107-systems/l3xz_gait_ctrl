@@ -16,6 +16,8 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <std_msgs/msg/float32.hpp>
+#include <std_msgs/msg/u_int64.hpp>
+
 #include <geometry_msgs/msg/twist.hpp>
 
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
@@ -46,6 +48,13 @@ private:
   gait::Controller _gait_ctrl;
   gait::ControllerInput _gait_ctrl_input;
   gait::ControllerOutput _gait_ctrl_output;
+
+  std::chrono::steady_clock::time_point const _node_start;
+
+  rclcpp::Publisher<std_msgs::msg::UInt64>::SharedPtr _heartbeat_pub;
+  static std::chrono::milliseconds constexpr HEARTBEAT_LOOP_RATE{100};
+  rclcpp::TimerBase::SharedPtr _heartbeat_loop_timer;
+  void init_heartbeat();
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
 
