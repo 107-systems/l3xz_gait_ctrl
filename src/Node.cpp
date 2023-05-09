@@ -30,7 +30,38 @@ Node::Node()
 , _gait_ctrl{get_logger(), get_clock()}
 , _gait_ctrl_input{}
 , _gait_ctrl_output{}
+, _node_start{std::chrono::steady_clock::now()}
 , _prev_ctrl_loop_timepoint{std::chrono::steady_clock::now()}
+{
+  init_heartbeat();
+  init_sub();
+  init_pub();
+
+  _ctrl_loop_timer = create_wall_timer(CTRL_LOOP_RATE, [this]() { this->ctrl_loop(); });
+
+  RCLCPP_INFO(get_logger(), "%s init complete.", get_name());
+}
+
+/**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void Node::init_heartbeat()
+{
+  std::stringstream heartbeat_topic;
+  heartbeat_topic << "/l3xz/" << get_name() << "/heartbeat";
+  _heartbeat_pub = create_publisher<std_msgs::msg::UInt64>(heartbeat_topic.str(), 1);
+  _heartbeat_loop_timer = create_wall_timer(HEARTBEAT_LOOP_RATE,
+                                            [this]()
+                                            {
+                                              std_msgs::msg::UInt64 heartbeat_msg;
+                                              heartbeat_msg.data = std::chrono::duration_cast<std::chrono::seconds>(
+                                                std::chrono::steady_clock::now() - _node_start).count();
+                                              _heartbeat_pub->publish(heartbeat_msg);
+                                            });
+}
+
+void Node::init_sub()
 {
   _robot_sub = create_subscription<geometry_msgs::msg::Twist>
     ("/l3xz/cmd_vel_robot",
@@ -44,26 +75,27 @@ Node::Node()
   for (auto leg : LEG_LIST)
     for (auto joint : JOINT_LIST)
     {
-      std::stringstream angle_actual_sub_topic, angle_target_pub_topic;
+      std::stringstream angle_actual_sub_topic;
       angle_actual_sub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/actual";
-      angle_target_pub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/target";
 
-      _angle_actual_sub[make_key(leg, joint)] = create_subscription<std_msgs::msg::Float32>
-        (angle_actual_sub_topic.str(),
-         1,
-         [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data * 180.0f / M_PI); }
-         );
-
-      _angle_targed_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
+      _angle_actual_sub[make_key(leg, joint)] = create_subscription<std_msgs::msg::Float32>(
+        angle_actual_sub_topic.str(),
+        1,
+        [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data * 180.0f / M_PI); });
     }
-
-  _ctrl_loop_timer = create_wall_timer
-    (std::chrono::milliseconds(CTRL_LOOP_RATE.count()), [this]() { this->ctrl_loop(); });
 }
 
-/**************************************************************************************
- * PRIVATE MEMBER FUNCTIONS
- **************************************************************************************/
+void Node::init_pub()
+{
+  for (auto leg : LEG_LIST)
+    for (auto joint : JOINT_LIST)
+    {
+      std::stringstream angle_target_pub_topic;
+      angle_target_pub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/target";
+
+      _angle_target_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
+    }
+}
 
 void Node::ctrl_loop()
 {
@@ -88,7 +120,7 @@ void Node::ctrl_loop()
       /* Publish all target angles. */
       std_msgs::msg::Float32 angle_target_msg;
       angle_target_msg.data = _gait_ctrl_output.get_angle_deg(leg, joint) * M_PI / 180.0f;
-      _angle_targed_pub[make_key(leg, joint)]->publish(angle_target_msg);
+      _angle_target_pub[make_key(leg, joint)]->publish(angle_target_msg);
     }
 }
 

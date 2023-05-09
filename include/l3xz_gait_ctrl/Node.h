@@ -16,6 +16,8 @@
 #include <rclcpp/rclcpp.hpp>
 
 #include <std_msgs/msg/float32.hpp>
+#include <std_msgs/msg/u_int64.hpp>
+
 #include <geometry_msgs/msg/twist.hpp>
 
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
@@ -47,13 +49,21 @@ private:
   gait::ControllerInput _gait_ctrl_input;
   gait::ControllerOutput _gait_ctrl_output;
 
-  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
+  std::chrono::steady_clock::time_point const _node_start;
 
+  rclcpp::Publisher<std_msgs::msg::UInt64>::SharedPtr _heartbeat_pub;
+  static std::chrono::milliseconds constexpr HEARTBEAT_LOOP_RATE{100};
+  rclcpp::TimerBase::SharedPtr _heartbeat_loop_timer;
+  void init_heartbeat();
+
+  rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
   std::map<LegJointKey,
            rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
+  void init_sub();
 
   std::map<LegJointKey,
-           rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_targed_pub;
+           rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_target_pub;
+  void init_pub();
 
   std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;
   static std::chrono::milliseconds constexpr CTRL_LOOP_RATE{10};
