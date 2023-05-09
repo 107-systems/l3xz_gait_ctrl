@@ -57,12 +57,13 @@ private:
   void init_heartbeat();
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
-
   std::map<LegJointKey,
            rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
+  void init_sub();
 
   std::map<LegJointKey,
            rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_targed_pub;
+  void init_pub();
 
   std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;
   static std::chrono::milliseconds constexpr CTRL_LOOP_RATE{10};
