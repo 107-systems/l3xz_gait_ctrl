@@ -60,8 +60,9 @@ Node::Node()
       _angle_targed_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
     }
 
-  _ctrl_loop_timer = create_wall_timer
-    (std::chrono::milliseconds(CTRL_LOOP_RATE.count()), [this]() { this->ctrl_loop(); });
+  _ctrl_loop_timer = create_wall_timer(CTRL_LOOP_RATE, [this]() { this->ctrl_loop(); });
+
+  RCLCPP_INFO(get_logger(), "%s init complete.", get_name());
 }
 
 /**************************************************************************************
