@@ -62,7 +62,7 @@ private:
   void init_sub();
 
   std::map<LegJointKey,
-           rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_targed_pub;
+           rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_target_pub;
   void init_pub();
 
   std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;

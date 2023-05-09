@@ -93,7 +93,7 @@ void Node::init_pub()
       std::stringstream angle_target_pub_topic;
       angle_target_pub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/target";
 
-      _angle_targed_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
+      _angle_target_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
     }
 }
 
@@ -120,7 +120,7 @@ void Node::ctrl_loop()
       /* Publish all target angles. */
       std_msgs::msg::Float32 angle_target_msg;
       angle_target_msg.data = _gait_ctrl_output.get_angle_deg(leg, joint) * M_PI / 180.0f;
-      _angle_targed_pub[make_key(leg, joint)]->publish(angle_target_msg);
+      _angle_target_pub[make_key(leg, joint)]->publish(angle_target_msg);
     }
 }
 
