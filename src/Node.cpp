@@ -95,6 +95,8 @@ void Node::init_pub()
 
       _angle_target_pub[make_key(leg, joint)] = create_publisher<std_msgs::msg::Float32>(angle_target_pub_topic.str(), 1);
     }
+
+  _odom_pub = create_publisher<nav_msgs::msg::Odometry>("/l3xz/odom", 1);
 }
 
 void Node::ctrl_loop()
@@ -111,17 +113,46 @@ void Node::ctrl_loop()
   _prev_ctrl_loop_timepoint = now;
 
 
+  /* Calculate the joint angle set points based on the
+   * current joint position, kinematic constraints and
+   * controller input.
+   */
   _gait_ctrl_output = _gait_ctrl.update(_kinematic_engine, _gait_ctrl_input, _gait_ctrl_output);
 
-
+  /* Publish the target angle for all joints of all legs.
+   */
   for (auto leg : LEG_LIST)
     for (auto joint : JOINT_LIST)
     {
-      /* Publish all target angles. */
       std_msgs::msg::Float32 angle_target_msg;
       angle_target_msg.data = _gait_ctrl_output.get_angle_deg(leg, joint) * M_PI / 180.0f;
       _angle_target_pub[make_key(leg, joint)]->publish(angle_target_msg);
     }
+
+  /* Calculate the odometry from the kinematic engine
+   * and publish a nav_msgs/Odometry message which is
+   * required by the mapping software.
+   */
+  {
+    nav_msgs::msg::Odometry msg;
+
+    /* Setup header. */
+    msg.header = std_msgs::msg::Header();
+    msg.header.stamp = builtin_interfaces::msg::Time();
+    msg.header.frame_id = "odom";
+
+    /* Setup child frame id. */
+    msg.child_frame_id = "";
+
+    /* Calculate and set-up odmetry pose. */
+    msg.pose = geometry_msgs::msg::PoseWithCovariance(); // TODO
+
+    /* Calculate and set-up odometry twist. */
+    msg.twist = geometry_msgs::msg::TwistWithCovariance(); // TODO
+
+    /* Actually publish the message. */
+    _odom_pub->publish(msg);
+  }
 }
 
 /**************************************************************************************

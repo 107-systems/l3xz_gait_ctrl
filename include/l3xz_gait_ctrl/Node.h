@@ -18,6 +18,8 @@
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/u_int64.hpp>
 
+#include <nav_msgs/msg/odometry.hpp>
+
 #include <geometry_msgs/msg/twist.hpp>
 
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
@@ -63,6 +65,7 @@ private:
 
   std::map<LegJointKey,
            rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr> _angle_target_pub;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr _odom_pub;
   void init_pub();
 
   std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;

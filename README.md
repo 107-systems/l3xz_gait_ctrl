@@ -39,7 +39,8 @@ ros2 launch l3xz_gait_ctrl gait_ctrl.py
 | `/l3xz/ctrl/leg/angle/actual` | [`l3xz_gait_ctrl/LegAngle`](msg/LegAngle.msg) |
 
 ##### Published Topics
-|           Default name           |                                     Type                                     |
-|:--------------------------------:|:----------------------------------------------------------------------------:|
-| `/l3xz/l3xz_gait_ctrl/heartbeat` | [`std_msgs/UInt64`](https://docs.ros2.org/foxy/api/std_msgs/msg/UInt64.html) |
-|   `/l3xz/ctrl/leg/angle/target`  |                [`l3xz_gait_ctrl/LegAngle`](msg/LegAngle.msg)                 |
+|           Default name           |                                       Type                                        |
+|:--------------------------------:|:---------------------------------------------------------------------------------:|
+| `/l3xz/l3xz_gait_ctrl/heartbeat` |   [`std_msgs/UInt64`](https://docs.ros2.org/foxy/api/std_msgs/msg/UInt64.html)    |
+|  `/l3xz/ctrl/leg/angle/target`   |                   [`l3xz_gait_ctrl/LegAngle`](msg/LegAngle.msg)                   |
+|          `/l3xz/odom`            | [`nav_msgs/Odometry`](http://docs.ros.org/en/api/nav_msgs/html/msg/Odometry.html) |
