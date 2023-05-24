@@ -142,7 +142,7 @@ void Node::ctrl_loop()
     msg.header.frame_id = "odom";
 
     /* Setup child frame id. */
-    msg.child_frame_id = "";
+    msg.child_frame_id = "base_link";
 
     /* Calculate and set-up odmetry pose. */
     msg.pose = geometry_msgs::msg::PoseWithCovariance(); // TODO
