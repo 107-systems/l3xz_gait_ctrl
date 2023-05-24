@@ -22,6 +22,8 @@
 
 #include <geometry_msgs/msg/twist.hpp>
 
+#include <ros2_heartbeat/Publisher.h>
+
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
@@ -53,9 +55,8 @@ private:
 
   std::chrono::steady_clock::time_point const _node_start;
 
-  rclcpp::Publisher<std_msgs::msg::UInt64>::SharedPtr _heartbeat_pub;
   static std::chrono::milliseconds constexpr HEARTBEAT_LOOP_RATE{100};
-  rclcpp::TimerBase::SharedPtr _heartbeat_loop_timer;
+  heartbeat::Publisher::SharedPtr _heartbeat_pub;
   void init_heartbeat();
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
