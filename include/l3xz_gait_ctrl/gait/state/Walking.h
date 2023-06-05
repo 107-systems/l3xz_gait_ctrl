@@ -53,7 +53,7 @@ public:
 
 private:
   static const std::vector<KDL::Vector> FOOT_TRAJECTORY;
-  static constexpr float PHASE_INCREMENT_ABS = 0.005;
+  static constexpr float PHASE_INCREMENT_ABS = 0.001;
 
   const float _phase_increment;
   float _phase = 0;   ///< (-1,+1)
