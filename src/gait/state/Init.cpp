@@ -68,8 +68,8 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
    * initialization is complete then we shall transition
    * into the stand-up state.
    */
-  if (std::abs(input.teleop_linear_velocity_x()) > 0.2f ||
-      std::abs(input.teleop_angular_velocity_z()) > 0.2f)
+  if (std::abs(input.teleop_linear_velocity_x()) > 0.4f ||
+      std::abs(input.teleop_angular_velocity_z()) > 0.4f)
     return std::tuple(new StandUp(_logger, _clock), next_output);
 
   return std::tuple(this, next_output);
