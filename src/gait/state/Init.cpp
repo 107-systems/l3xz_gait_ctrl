@@ -45,19 +45,56 @@ std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const &
     float const coxa_deg_actual = input.get_angle_deg(leg, Joint::Coxa);
     float const coxa_deg_target = 180.0f;
 
+    float const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
+    float const femur_deg_target = 0.0f;
+
+    float const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
+    float const tibia_deg_target = 0.0f;
+
+
     /* Set output to the angle actuators. */
-    next_output.set_angle_deg(leg, Joint::Coxa, coxa_deg_target);
+    next_output.set_angle_deg(leg, Joint::Coxa,  coxa_deg_target);
+    next_output.set_angle_deg(leg, Joint::Femur, femur_deg_target);
+    next_output.set_angle_deg(leg, Joint::Tibia, tibia_deg_target);
 
     /* Check if target angles have been reached. */
-    float const coxa_angle_error = fabs(coxa_deg_actual - coxa_deg_target);
-    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
+    {
+      float const coxa_angle_error = fabs(coxa_deg_actual - coxa_deg_target);
+      bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.5f;
 
-    if (!coxa_is_initial_angle_reached) {
-      RCLCPP_INFO_THROTTLE(_logger,
-                           *_clock,
-                           1000,
-                           "l3xz::gait::state::Init::update: %s coxa target angle not reached", LegToStr(leg).c_str());
-      all_target_angles_reached = false;
+      if (!coxa_is_initial_angle_reached) {
+        RCLCPP_INFO_THROTTLE(_logger,
+                             *_clock,
+                             1000,
+                             "l3xz::gait::state::Init::update: %s coxa target angle not reached", LegToStr(leg).c_str());
+        all_target_angles_reached = false;
+      }
+    }
+
+    {
+      float const femur_angle_error = fabs(femur_deg_actual - femur_deg_target);
+      bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
+
+      if (!femur_is_initial_angle_reached) {
+        RCLCPP_INFO_THROTTLE(_logger,
+                             *_clock,
+                             1000,
+                             "l3xz::gait::state::Init::update: %s femur target angle not reached", LegToStr(leg).c_str());
+        all_target_angles_reached = false;
+      }
+    }
+
+    {
+      float const tibia_angle_error = fabs(tibia_deg_actual - tibia_deg_target);
+      bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
+
+      if (!tibia_is_initial_angle_reached) {
+        RCLCPP_INFO_THROTTLE(_logger,
+                             *_clock,
+                             1000,
+                             "l3xz::gait::state::Init::update: %s tibia target angle not reached", LegToStr(leg).c_str());
+        all_target_angles_reached = false;
+      }
     }
   }
 
