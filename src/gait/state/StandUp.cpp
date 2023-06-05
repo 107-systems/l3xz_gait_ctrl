@@ -47,17 +47,42 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
     double const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
     double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
 
+    /* Right now this should simply hold position.
+     * TODO: extend the code for a smooth lowering
+     * of the legs.
+     */
+    kinematic::FK_Input const fk_input(coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+    auto const fk_output = engine.fk_solve(fk_input);
+
+    if (!fk_output.has_value())
+    {
+      RCLCPP_ERROR(_logger, "StandUp::update, engine.fk_solve failed for (%0.2f, %0.2f, %0.2f)",
+                   fk_output.value().tibia_tip_x(),
+                   fk_output.value().tibia_tip_y(),
+                   fk_output.value().tibia_tip_z());
+      return {this, next_output};
+    }
+
     /* Calculate required target angles for desired
      * target position and set the output actuators.
      */
-    const auto pos = Walking::sampleFootTrajectory(Walking::getLegTraits(leg), 0);
-    kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
-                                               coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+    kinematic::IK_Input const ik_input(fk_output.value().tibia_tip_x(),
+                                       fk_output.value().tibia_tip_y(),
+                                       fk_output.value().tibia_tip_z(),
+                                       coxa_deg_actual,
+                                       femur_deg_actual,
+                                       tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
 
-    if (!ik_output.has_value()) {
+    if (!ik_output.has_value())
+    {
       RCLCPP_ERROR(_logger, "StandUp::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
-        pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+                   fk_output.value().tibia_tip_x(),
+                   fk_output.value().tibia_tip_y(),
+                   fk_output.value().tibia_tip_z(),
+                   coxa_deg_actual,
+                   femur_deg_actual,
+                   tibia_deg_actual);
       return {this, next_output};
     }
 
