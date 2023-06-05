@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
 
-#include <l3xz_gait_ctrl/gait/state/Init.h>
+#include <l3xz_gait_ctrl/gait/state/Init_Femur.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -26,7 +26,7 @@ namespace l3xz::gait
 Controller::Controller(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
 : _logger{logger}
 , _clock{clock}
-, _robot_state{new state::Init(_logger, _clock)}
+, _robot_state{new state::Init_Femur(_logger, _clock)}
 {
   _robot_state->onEnter();
 }
