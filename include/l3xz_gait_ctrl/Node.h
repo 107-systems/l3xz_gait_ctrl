@@ -15,6 +15,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/u_int64.hpp>
 
@@ -62,6 +63,7 @@ private:
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
   std::map<LegJointKey,
            rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
+  std::map<Leg, rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr> _tibia_endpoint_switch_sub;
   void init_sub();
 
   std::map<LegJointKey,

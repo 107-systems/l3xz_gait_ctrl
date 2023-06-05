@@ -76,6 +76,17 @@ void Node::init_sub()
         1,
         [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data * 180.0f / M_PI); });
     }
+
+  for (auto leg : LEG_LIST)
+  {
+    std::stringstream tibia_endpoint_switch_sub_topic;
+    tibia_endpoint_switch_sub_topic << "/l3xz/leg/" << LegToStr(leg) << "/tibia_endpoint_switch/actual";
+
+    _tibia_endpoint_switch_sub[leg] = create_subscription<std_msgs::msg::Bool>(
+      tibia_endpoint_switch_sub_topic.str(),
+      1,
+      [this, leg](std_msgs::msg::Bool::SharedPtr const msg) { _gait_ctrl_input.set_is_tibia_endpoint_switch_pressed(leg, msg->data); });
+  }
 }
 
 void Node::init_pub()
