@@ -15,6 +15,8 @@
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
+#include <l3xz_gait_ctrl/gait/util/Util.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -58,7 +60,7 @@ std::tuple<StateBase *, ControllerOutput> Turning::update(kinematic::Engine cons
     next_output.set_angle_deg(leg, Joint::Femur, ik_output.value().femur_angle_deg());
     next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().tibia_angle_deg());
   }
-  _phase += PHASE_INCREMENT;
+  _phase += PHASE_INCREMENT_ABS;
   return std::tuple((_phase < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger, _clock)), next_output);
 }
 

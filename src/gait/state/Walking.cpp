@@ -10,7 +10,6 @@
 
 #include <l3xz_gait_ctrl/gait/state/Walking.h>
 
-#include <l3xz_gait_ctrl/gait/util/Util.h>
 #include <l3xz_gait_ctrl/gait/state/Standing.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>

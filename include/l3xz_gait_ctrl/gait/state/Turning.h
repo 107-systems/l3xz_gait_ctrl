@@ -23,8 +23,6 @@ public:
 private:
   const bool _left;
   float _phase = 0;
-
-  static constexpr float PHASE_INCREMENT = 0.005;
 };
 
 } /* l3xz::gait::state */
