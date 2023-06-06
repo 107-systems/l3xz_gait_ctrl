@@ -39,16 +39,6 @@ std::tuple<StateBase *, ControllerOutput> Init_Femur::update(kinematic::Engine c
 {
   ControllerOutput next_output = prev_output;
 
-  /* This is the first init state. Prevent sudden movement on
-   * femur/tibia by capturing their current state and storing it
-   * within next_output.
-   */
-  for (auto leg : LEG_LIST)
-  {
-    next_output.set_angle_deg(leg, Joint::Coxa, input.get_angle_deg(leg, Joint::Coxa));
-    next_output.set_angle_deg(leg, Joint::Tibia, input.get_angle_deg(leg, Joint::Tibia));
-  }
-
   bool all_target_angles_reached = true;
   std::stringstream leg_not_reached_list;
   for (auto leg : LEG_LIST)

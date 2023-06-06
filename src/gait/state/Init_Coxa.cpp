@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/state/Init_Coxa.h>
 
-#include <l3xz_gait_ctrl/gait/state/StandUp.h>
+#include <l3xz_gait_ctrl/gait/state/Init_Femur.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
@@ -39,7 +39,18 @@ std::tuple<StateBase *, ControllerOutput> Init_Coxa::update(kinematic::Engine co
 {
   ControllerOutput next_output = prev_output;
 
+  /* This is the first init state. Prevent sudden movement on
+   * femur/tibia by capturing their current state and storing it
+   * within next_output.
+   */
+  for (auto leg : LEG_LIST)
+  {
+    next_output.set_angle_deg(leg, Joint::Femur, input.get_angle_deg(leg, Joint::Femur));
+    next_output.set_angle_deg(leg, Joint::Tibia, input.get_angle_deg(leg, Joint::Tibia));
+  }
+
   bool all_target_angles_reached = true;
+  std::stringstream leg_not_reached_list;
   for (auto leg : LEG_LIST)
   {
     float const coxa_deg_actual = input.get_angle_deg(leg, Joint::Coxa);
@@ -52,26 +63,22 @@ std::tuple<StateBase *, ControllerOutput> Init_Coxa::update(kinematic::Engine co
 
     if (!coxa_is_initial_angle_reached)
     {
-      RCLCPP_INFO_THROTTLE(_logger,
-                           *_clock,
-                           1000,
-                           "l3xz::gait::state::Init_Coxa::update: %s coxa target angle not reached", LegToStr(leg).c_str());
+      leg_not_reached_list << LegToStr(leg) << " ";
       all_target_angles_reached = false;
     }
   }
 
   if (!all_target_angles_reached)
+  {
+    RCLCPP_INFO_THROTTLE(_logger,
+                         *_clock,
+                         1000,
+                         "l3xz::gait::state::Init_Coxa::update: target angle not reached for [ %s]", leg_not_reached_list.str().c_str());
+
     return std::tuple(this, next_output);
+  }
 
-  /* If the robot control joystick is moved after
-   * initialization is complete then we shall transition
-   * into the stand-up state.
-   */
-  if (std::abs(input.teleop_linear_velocity_x()) > 0.4f ||
-      std::abs(input.teleop_angular_velocity_z()) > 0.4f)
-    return std::tuple(new StandUp(_logger, _clock), next_output);
-
-  return std::tuple(this, next_output);
+  return std::tuple(new Init_Femur(_logger, _clock), next_output);
 }
 
 /**************************************************************************************
