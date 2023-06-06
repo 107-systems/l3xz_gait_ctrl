@@ -134,18 +134,18 @@ void Node::ctrl_loop()
    * every input message has been timely received.
    */
   if (!_opt_last_robot_msg.has_value()) {
-    RCLCPP_WARN(get_logger(), "no robot message has been received yet.");
+    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "no robot message has been received yet.");
     return;
   }
   for (auto leg : LEG_LIST)
     for (auto joint : JOINT_LIST)
       if (!_opt_last_angle_actual_msg.at(make_key(leg, joint)).has_value()) {
-        RCLCPP_WARN(get_logger(), "no actual angle message has been received yet.");
+        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "no actual angle message has been received yet.");
         return;
       }
   for (auto leg : LEG_LIST)
     if (!_opt_last_tibia_endpoint_switch_msg.at(leg).has_value()) {
-      RCLCPP_WARN(get_logger(), "no tibia endpoint switch message has been received yet.");
+      RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "no tibia endpoint switch message has been received yet.");
       return;
     }
 

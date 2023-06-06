@@ -58,19 +58,28 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
 
     if (!fk_output.has_value())
     {
-      RCLCPP_ERROR(_logger, "StandUp::update, engine.fk_solve failed for (%0.2f, %0.2f, %0.2f)",
-                   fk_output.value().tibia_tip_x(),
-                   fk_output.value().tibia_tip_y(),
-                   fk_output.value().tibia_tip_z());
+      RCLCPP_ERROR(_logger,
+                   "StandUp::update, engine.fk_solve failed for (%0.2f, %0.2f, %0.2f)",
+                   coxa_deg_actual,
+                   femur_deg_actual,
+                   tibia_deg_actual);
       return {this, next_output};
     }
+
+    RCLCPP_INFO_THROTTLE(_logger,
+                         *_clock,
+                         1000,
+                         "StandUp::update, fk_output = (%0.2f, %0.2f, %0.2f)",
+                         fk_output.value().tibia_tip_x(),
+                         fk_output.value().tibia_tip_y(),
+                         fk_output.value().tibia_tip_z());
 
     /* Calculate required target angles for desired
      * target position and set the output actuators.
      */
-    kinematic::IK_Input const ik_input(fk_output.value().tibia_tip_x(),
-                                       fk_output.value().tibia_tip_y(),
-                                       fk_output.value().tibia_tip_z(),
+    kinematic::IK_Input const ik_input(-230.0f,//fk_output.value().tibia_tip_x(), // THIS IS REALLY "X"
+                                       0.0f,//fk_output.value().tibia_tip_y(), // THIS IS REALLY "Y"
+                                       -250.0f,//fk_output.value().tibia_tip_z(),
                                        coxa_deg_actual,
                                        femur_deg_actual,
                                        tibia_deg_actual);
@@ -78,7 +87,8 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
 
     if (!ik_output.has_value())
     {
-      RCLCPP_ERROR(_logger, "StandUp::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+      RCLCPP_ERROR(_logger,
+                   "StandUp::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
                    fk_output.value().tibia_tip_x(),
                    fk_output.value().tibia_tip_y(),
                    fk_output.value().tibia_tip_z(),

@@ -34,9 +34,10 @@ void Standing::onExit()
   RCLCPP_INFO(_logger, "Standing EXIT");
 }
 
-std::tuple<StateBase *, ControllerOutput> Standing::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)
+std::tuple<StateBase *, ControllerOutput> Standing::update(kinematic::Engine const & /* engine */, ControllerInput const & /* input */, ControllerOutput const & prev_output)
 {
   ControllerOutput next_output = prev_output;
+  /*
   if (std::abs(input.teleop_linear_velocity_x()) > 0.2f)
   {
     return std::tuple(new Walking(_logger, _clock, input.teleop_linear_velocity_x() > 0), next_output);
@@ -45,6 +46,7 @@ std::tuple<StateBase *, ControllerOutput> Standing::update(kinematic::Engine con
   {
     return std::tuple(new Turning(_logger, _clock, input.teleop_angular_velocity_z() > 0), next_output);
   }
+   */
   return std::tuple(this, next_output);
 }
 
