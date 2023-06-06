@@ -45,8 +45,8 @@ std::tuple<StateBase *, ControllerOutput> Init_Coxa::update(kinematic::Engine co
    */
   for (auto leg : LEG_LIST)
   {
-    next_output.set_angle_deg(leg, Joint::Femur, input.get_angle_deg(leg, Joint::Femur));
-    next_output.set_angle_deg(leg, Joint::Tibia, input.get_angle_deg(leg, Joint::Tibia));
+    next_output.set_angle_deg(leg, Joint::Femur, 0.0f);
+    next_output.set_angle_deg(leg, Joint::Tibia, 0.0f);
   }
 
   bool all_target_angles_reached = true;
