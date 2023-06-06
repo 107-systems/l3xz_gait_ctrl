@@ -38,6 +38,7 @@ public:
   std::string toStr() const;
 
 private:
+  KDL::Vector const _pos_vec;
   double const _tibia_tip_x;
   double const _tibia_tip_y;
   double const _tibia_tip_z;
