@@ -84,7 +84,7 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
 
   std::stringstream msg;
   msg << "FK results: KDL frame: " << std::endl << tibia_tip_frame << std::endl <<  "FK_Output = " << fk_output.toStr();
-  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
+  RCLCPP_DEBUG(_logger, "%s", msg.str().c_str());
 
   return fk_output;
 }
@@ -108,19 +108,23 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
     return std::nullopt;
   }
 
-  /* Print/return results. */
-  std::stringstream msg;
-  msg << "IK results" << std::endl;
-  for (size_t r = 0; r < joint_positions_out.rows(); r++)
-    msg << joint_positions_out(r) << std::endl;
-  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
-
   IK_Output const ik_output(
     +joint_positions_out(0),
     -joint_positions_out(1),
     +joint_positions_out(2)
   );
-  RCLCPP_INFO(_logger, "%s", ik_output.toStr().c_str());
+
+  /* Print/return results. */
+  std::stringstream msg;
+  msg << "IK results: KDL::JntArray = [ ";
+  for (size_t r = 0; r < joint_positions_out.rows(); r++)
+    msg << joint_positions_out(r) << " ";
+  msg << " ], ";
+
+  msg << "IK_Output = " << ik_output.toStr();
+
+  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
+
   return ik_output;
 }
 
