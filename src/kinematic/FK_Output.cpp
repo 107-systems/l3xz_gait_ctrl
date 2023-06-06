@@ -38,7 +38,7 @@ std::string FK_Output::toStr() const
 {
   std::stringstream msg;
 
-  msg << "("
+  msg << "["
       << std::fixed
       << std::setprecision(2) 
       << std::setfill(' ')
@@ -55,7 +55,8 @@ std::string FK_Output::toStr() const
       << std::setprecision(2) 
       << std::setfill(' ')
       << std::setw(6)
-      << _tibia_tip_z;
+      << _tibia_tip_z
+      << "]";
 
   return msg.str();
 }
