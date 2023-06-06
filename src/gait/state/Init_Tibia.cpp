@@ -40,6 +40,7 @@ std::tuple<StateBase *, ControllerOutput> Init_Tibia::update(kinematic::Engine c
   ControllerOutput next_output = prev_output;
 
   bool all_target_angles_reached = true;
+  std::stringstream leg_not_reached_list;
   for (auto leg : LEG_LIST)
   {
     float const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
@@ -52,17 +53,20 @@ std::tuple<StateBase *, ControllerOutput> Init_Tibia::update(kinematic::Engine c
 
     if (!tibia_is_initial_angle_reached)
     {
-      RCLCPP_INFO_THROTTLE(_logger,
-                           *_clock,
-                           1000,
-                           "l3xz::gait::state::Init_Tibia::update: %s tibia target angle not reached",
-                           LegToStr(leg).c_str());
+      leg_not_reached_list << LegToStr(leg) << " ";
       all_target_angles_reached = false;
     }
   }
 
   if (!all_target_angles_reached)
+  {
+    RCLCPP_INFO_THROTTLE(_logger,
+                         *_clock,
+                         1000,
+                         "l3xz::gait::state::Init_Tibia::update: target angle not reached for [ %s]", leg_not_reached_list.str().c_str());
+
     return std::tuple(this, next_output);
+  }
 
   return std::tuple(new Init_Coxa(_logger, _clock), next_output);
 }
