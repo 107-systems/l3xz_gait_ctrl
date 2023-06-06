@@ -41,6 +41,8 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
   ControllerOutput next_output = prev_output;
 
   bool all_target_angles_reached = true;
+  std::stringstream coxa_leg_not_reached_list, femur_leg_not_reached_list, tibia_leg_not_reached_list;
+
   for (auto leg : LEG_LIST)
   {
     double const coxa_deg_actual  = input.get_angle_deg(leg, Joint::Coxa );
@@ -94,10 +96,11 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
     /* Check if target angles have been reached. */
     float const coxa_angle_actual = input.get_angle_deg(leg, Joint::Coxa);
     float const coxa_angle_error = fabs(ik_output.value().coxa_angle_deg() - coxa_angle_actual);
-    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 5.0f;
+    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.5f;
 
-    if (!coxa_is_initial_angle_reached) {
-      RCLCPP_INFO(_logger, "l3xz::gait::state::StandUp::update: leg %d coxa target angle not reached", int(leg));
+    if (!coxa_is_initial_angle_reached)
+    {
+      coxa_leg_not_reached_list << LegToStr(leg) << " ";
       all_target_angles_reached = false;
     }
  
@@ -105,8 +108,9 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
     float const femur_angle_error = fabs(ik_output.value().femur_angle_deg() - femur_angle_actual);
     bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;
 
-    if (!femur_is_initial_angle_reached) {
-      RCLCPP_INFO(_logger, "l3xz::gait::state::StandUp::update: leg %d femur target angle not reached", int(leg));
+    if (!femur_is_initial_angle_reached)
+    {
+      femur_leg_not_reached_list << LegToStr(leg) << " ";
       all_target_angles_reached = false;
     }
 
@@ -114,14 +118,25 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
     float const tibia_angle_error = fabs(ik_output.value().tibia_angle_deg() - tibia_angle_actual);
     bool  const tibia_is_initial_angle_reached = tibia_angle_error < 5.0f;
 
-    if (!tibia_is_initial_angle_reached) {
-      RCLCPP_INFO(_logger, "l3xz::gait::state::StandUp::update: tibia %d target angle not reached", int(leg));
+    if (!tibia_is_initial_angle_reached)
+    {
+      tibia_leg_not_reached_list << LegToStr(leg) << " ";
       all_target_angles_reached = false;
     }
   }
 
   if (!all_target_angles_reached)
+  {
+    RCLCPP_INFO_THROTTLE(_logger,
+                         *_clock,
+                         1000,
+                         "l3xz::gait::state::StandUp::update: target angle not reached for\n\tcoxa  [ %s]\n\tfemur [ %s]\n\ttibia [ %s]",
+                         coxa_leg_not_reached_list.str().c_str(),
+                         femur_leg_not_reached_list.str().c_str(),
+                         tibia_leg_not_reached_list.str().c_str());
+
     return std::tuple(this, next_output);
+  }
 
   return std::tuple(new Standing(_logger, _clock), next_output);
 }
