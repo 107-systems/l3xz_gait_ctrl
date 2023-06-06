@@ -123,7 +123,7 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
 
   msg << "IK_Output = " << ik_output.toStr();
 
-  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
+  RCLCPP_DEBUG(_logger, "%s", msg.str().c_str());
 
   return ik_output;
 }
