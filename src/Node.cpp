@@ -101,6 +101,22 @@ void Node::init_sub()
         _gait_ctrl_input.set_is_tibia_endpoint_switch_pressed(leg, msg->data);
       });
   }
+
+  _robot_req_up_sub = create_subscription<std_msgs::msg::Bool>(
+    "/l3xz/cmd_robot/req_up",
+    1,
+    [this](std_msgs::msg::Bool::SharedPtr const msg)
+    {
+      _gait_ctrl_input.set_request_up(msg->data);
+    });
+
+  _robot_req_down_sub = create_subscription<std_msgs::msg::Bool>(
+    "/l3xz/cmd_robot/req_down",
+    1,
+    [this](std_msgs::msg::Bool::SharedPtr const msg)
+    {
+      _gait_ctrl_input.set_request_down(msg->data);
+    });
 }
 
 void Node::init_pub()

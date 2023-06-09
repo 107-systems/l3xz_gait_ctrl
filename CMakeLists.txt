@@ -25,6 +25,8 @@ add_executable(${L3XZ_GAIT_CTRL_TARGET}
   src/gait/state/Init_Coxa.cpp
   src/gait/state/Init_Femur.cpp
   src/gait/state/Init_Tibia.cpp
+  src/gait/state/SitDown.cpp
+  src/gait/state/Sitting.cpp
   src/gait/state/Standing.cpp
   src/gait/state/StandUp.cpp
   src/gait/state/Turning.cpp

@@ -74,6 +74,9 @@ ControllerInput::ControllerInput(float const teleop_linear_velocity_x,
   _is_tibia_endpoint_switch_pressed_map[Leg::RightFront]  = false;
   _is_tibia_endpoint_switch_pressed_map[Leg::RightMiddle] = false;
   _is_tibia_endpoint_switch_pressed_map[Leg::RightBack]   = false;
+
+  _request_up   = false;
+  _request_down = false;
 }
 
 /**************************************************************************************

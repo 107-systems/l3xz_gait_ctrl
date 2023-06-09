@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/state/Init_Tibia.h>
 
-#include <l3xz_gait_ctrl/gait/state/StandUp.h>
+#include <l3xz_gait_ctrl/gait/state/Sitting.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
@@ -68,15 +68,7 @@ std::tuple<StateBase *, ControllerOutput> Init_Tibia::update(kinematic::Engine c
     return std::tuple(this, next_output);
   }
 
-  /* If the robot control joystick is moved after
-   * initialization is complete then we shall transition
-   * into the stand-up state.
-   */
-  if (std::abs(input.teleop_linear_velocity_x()) > 0.4f ||
-      std::abs(input.teleop_angular_velocity_z()) > 0.4f)
-    return std::tuple(new StandUp(_logger, _clock), next_output);
-
-  return std::tuple(this, next_output);
+  return std::tuple(new Sitting(_logger, _clock), next_output);
 }
 
 /**************************************************************************************
