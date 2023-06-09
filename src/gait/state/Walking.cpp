@@ -82,6 +82,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
 [[nodiscard]] KDL::Vector Walking::sampleFootTrajectory(const LegTraits lt, const float phase)
 {
   auto pos = interpolatePiecewiseClosed(wrapPhase(phase + (lt.index / 6.0F)), FOOT_TRAJECTORY.data(), FOOT_TRAJECTORY.size());
+  /*
   if (lt.is_front)
   {
     pos[1] += 100;
@@ -90,6 +91,7 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
   {
     pos[1] -= 80;
   }
+   */
   pos[1] *= lt.is_left ? -1.0F : +1.0F;
   return pos;
 }
