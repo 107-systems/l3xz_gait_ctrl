@@ -21,10 +21,10 @@
 namespace l3xz::gait::state
 {
 
-const float PITCH_MULT  = 0.8F;
-const float FOOT_X      = +180.0F;
-const float FOOT_Z_UP   = -130.0F;
-const float FOOT_Z_DOWN = -200.0F;
+const float PITCH_MULT  =    0.3F;
+const float FOOT_X      = -210.0F;
+const float FOOT_Z_UP   = -200.0F;
+const float FOOT_Z_DOWN = -260.0F;
 const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
   {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_UP},
   {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_DOWN},
