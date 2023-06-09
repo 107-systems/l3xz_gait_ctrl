@@ -77,9 +77,9 @@ std::tuple<StateBase *, ControllerOutput> StandUp::update(kinematic::Engine cons
     /* Calculate required target angles for desired
      * target position and set the output actuators.
      */
-    kinematic::IK_Input const ik_input(-205.0f,//fk_output.value().tibia_tip_x(), // THIS IS REALLY "X"
+    kinematic::IK_Input const ik_input(-210.0f,//fk_output.value().tibia_tip_x(), // THIS IS REALLY "X"
                                        0.0f,//fk_output.value().tibia_tip_y(), // THIS IS REALLY "Y"
-                                       -200.0f,//fk_output.value().tibia_tip_z(),
+                                       -260.0f,//fk_output.value().tibia_tip_z(),
                                        coxa_deg_actual,
                                        femur_deg_actual,
                                        tibia_deg_actual);
