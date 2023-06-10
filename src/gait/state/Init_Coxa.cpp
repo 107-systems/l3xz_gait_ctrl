@@ -25,7 +25,7 @@ namespace l3xz::gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Init_Coxa::onEnter()
+void Init_Coxa::onEnter(ControllerInput const & /* input */)
 {
   RCLCPP_INFO(_logger, "Init_Coxa ENTER");
 }

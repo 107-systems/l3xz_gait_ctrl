@@ -46,7 +46,7 @@ class Walking : public StateBase
 public:
   explicit Walking(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, const bool forward) : StateBase(logger, clock), _phase_increment(forward ? PHASE_INCREMENT_ABS : -PHASE_INCREMENT_ABS) {}
 
-  virtual void onEnter() override;
+  virtual void onEnter(ControllerInput const & input) override;
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 

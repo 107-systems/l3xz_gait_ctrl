@@ -26,9 +26,9 @@ namespace l3xz::gait
 Controller::Controller(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
 : _logger{logger}
 , _clock{clock}
-, _robot_state{new state::Init_Coxa(_logger, _clock)}
+, _robot_state{nullptr}
 {
-  _robot_state->onEnter();
+
 }
 
 Controller::~Controller()
@@ -42,6 +42,14 @@ Controller::~Controller()
 
 ControllerOutput Controller::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
+  /* Only the very fist time. */
+  if (!_robot_state)
+  {
+    _robot_state = new state::Init_Coxa(_logger, _clock);
+    _robot_state->onEnter(input);
+  }
+
+  /* Every time. */
   auto [next_robot_state, next_output] = _robot_state->update(engine, input, prev_output);
     
   if (next_robot_state != _robot_state)
@@ -51,7 +59,7 @@ ControllerOutput Controller::update(kinematic::Engine const & engine, Controller
     delete _robot_state;
     _robot_state = next_robot_state;
     
-    _robot_state->onEnter();
+    _robot_state->onEnter(input);
   }
 
   return next_output;

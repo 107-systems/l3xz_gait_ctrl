@@ -28,7 +28,7 @@ namespace l3xz::gait::state
  * CLASS MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Turning::onEnter()
+void Turning::onEnter(ControllerInput const & /* input */)
 {
   RCLCPP_INFO(_logger, "Turning ENTER");
 }

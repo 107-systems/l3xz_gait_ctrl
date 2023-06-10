@@ -25,7 +25,7 @@ namespace l3xz::gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void SitDown::onEnter()
+void SitDown::onEnter(ControllerInput const & /* input */)
 {
   RCLCPP_INFO(_logger, "SitDown ENTER");
 }

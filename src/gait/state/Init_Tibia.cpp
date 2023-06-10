@@ -25,7 +25,7 @@ namespace l3xz::gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Init_Tibia::onEnter()
+void Init_Tibia::onEnter(ControllerInput const & /* input */)
 {
   RCLCPP_INFO(_logger, "Init_Tibia ENTER");
 }

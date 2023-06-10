@@ -34,7 +34,7 @@ class StateBase
 public:
   StateBase(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : _logger{logger}, _clock{clock} { }
   virtual ~StateBase() { }
-  virtual void onEnter() { }
+  virtual void onEnter(ControllerInput const & /* input */) { }
   virtual void onExit() { }
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) = 0;
 

@@ -28,7 +28,7 @@ class Init_Tibia : public StateBase
 public:
   Init_Tibia(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
   virtual ~Init_Tibia() { }
-  virtual void onEnter() override;
+  virtual void onEnter(ControllerInput const & input) override;
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 };

@@ -28,7 +28,7 @@ class Init_Coxa : public StateBase
 public:
   Init_Coxa(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
   virtual ~Init_Coxa() { }
-  virtual void onEnter() override;
+  virtual void onEnter(ControllerInput const & input) override;
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 };

@@ -40,7 +40,7 @@ const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
   {FOOT_X, -103.5 * PITCH_MULT, FOOT_Z_UP},
 };
 
-void Walking::onEnter()
+void Walking::onEnter(ControllerInput const & /* input */)
 {
   RCLCPP_INFO(_logger, "Walking ENTER");
 }
