@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/state/Init_Coxa.h>
 
-#include <l3xz_gait_ctrl/gait/state/Init_Femur.h>
+#include <l3xz_gait_ctrl/gait/state/Sitting.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
@@ -78,7 +78,7 @@ std::tuple<StateBase *, ControllerOutput> Init_Coxa::update(kinematic::Engine co
     return std::tuple(this, next_output);
   }
 
-  return std::tuple(new Init_Femur(_logger, _clock), next_output);
+  return std::tuple(new Sitting(_logger, _clock), next_output);
 }
 
 /**************************************************************************************

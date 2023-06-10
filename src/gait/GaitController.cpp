@@ -10,7 +10,7 @@
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
 
-#include <l3xz_gait_ctrl/gait/state/Init_Coxa.h>
+#include <l3xz_gait_ctrl/gait/state/Init_Femur.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -45,7 +45,7 @@ ControllerOutput Controller::update(kinematic::Engine const & engine, Controller
   /* Only the very fist time. */
   if (!_robot_state)
   {
-    _robot_state = new state::Init_Coxa(_logger, _clock);
+    _robot_state = new state::Init_Femur(_logger, _clock);
     _robot_state->onEnter(input);
   }
 
