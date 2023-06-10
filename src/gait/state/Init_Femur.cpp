@@ -25,9 +25,19 @@ namespace l3xz::gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Init_Femur::onEnter(ControllerInput const & /* input */)
+void Init_Femur::onEnter(ControllerInput const & input)
 {
   RCLCPP_INFO(_logger, "Init_Femur ENTER");
+
+  /* This is the very first init state so we capture the initial angles
+   * of both coxa and tibia to provide a drifting away while the other
+   * joints are initialized.
+   */
+  for (auto leg : LEG_LIST)
+  {
+    _coxa_initial_angle_deg_map[leg] = input.get_angle_deg(leg, Joint::Coxa);
+    _tibia_initial_angle_deg_map[leg] = input.get_angle_deg(leg, Joint::Tibia);
+  }
 }
 
 void Init_Femur::onExit()
@@ -46,7 +56,9 @@ std::tuple<StateBase *, ControllerOutput> Init_Femur::update(kinematic::Engine c
     float const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
     float const femur_deg_target = 0.0f;
 
+    next_output.set_angle_deg(leg, Joint::Coxa,  _coxa_initial_angle_deg_map.at(leg));
     next_output.set_angle_deg(leg, Joint::Femur, femur_deg_target);
+    next_output.set_angle_deg(leg, Joint::Tibia, _tibia_initial_angle_deg_map.at(leg));
 
     float const femur_angle_error = fabs(femur_deg_actual - femur_deg_target);
     bool  const femur_is_initial_angle_reached = femur_angle_error < 5.0f;

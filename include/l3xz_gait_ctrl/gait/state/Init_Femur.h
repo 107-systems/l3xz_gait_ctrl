@@ -31,6 +31,9 @@ public:
   virtual void onEnter(ControllerInput const & input) override;
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
+
+private:
+  std::map<Leg, float> _coxa_initial_angle_deg_map, _tibia_initial_angle_deg_map;
 };
 
 /**************************************************************************************

@@ -39,16 +39,6 @@ std::tuple<StateBase *, ControllerOutput> Init_Coxa::update(kinematic::Engine co
 {
   ControllerOutput next_output = prev_output;
 
-  /* This is the first init state. Prevent sudden movement on
-   * femur/tibia by capturing their current state and storing it
-   * within next_output.
-   */
-  for (auto leg : LEG_LIST)
-  {
-    next_output.set_angle_deg(leg, Joint::Femur, 0.0f);
-    next_output.set_angle_deg(leg, Joint::Tibia, 0.0f);
-  }
-
   bool all_target_angles_reached = true;
   std::stringstream leg_not_reached_list;
   for (auto leg : LEG_LIST)
