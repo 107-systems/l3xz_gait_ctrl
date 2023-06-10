@@ -28,6 +28,7 @@ namespace l3xz::gait::state
 
 static std::vector<std::tuple<float /* x */, float /* y */, float /* z */>> const STAND_UP_TRAJ =
 {
+  {-200.0f, 0.0f, -140.0f},
   {-201.0f, 0.0f, -145.0f},
   {-201.0f, 0.0f, -150.0f},
   {-202.0f, 0.0f, -155.0f},
@@ -53,6 +54,10 @@ static std::vector<std::tuple<float /* x */, float /* y */, float /* z */>> cons
   {-210.0f, 0.0f, -255.0f},
   {-210.0f, 0.0f, -260.0f}
 };
+
+/**************************************************************************************
+ * CTOR/DTOR
+ **************************************************************************************/
 
 StandUp::StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
 : StateBase(logger, clock)
