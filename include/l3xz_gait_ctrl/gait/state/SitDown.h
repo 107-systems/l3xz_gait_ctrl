@@ -12,6 +12,8 @@
 
 #include "StateBase.h"
 
+#include <l3xz_gait_ctrl/types/Point3D.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -33,7 +35,7 @@ public:
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 
 private:
-  std::vector<std::tuple<float /* x */, float /* y */, float /* z */>>::const_iterator _citer;
+  PointVector::const_iterator _citer;
 };
 
 /**************************************************************************************

@@ -1,48 +1,34 @@
 /**
  * Copyright (c) 2023 LXRobotics GmbH.
  * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
- * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
+ * Contributors: https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl/graphs/contributors.
  */
 
-#ifndef STANDUP_STATE_H_
-#define STANDUP_STATE_H_
+#pragma once
 
 /**************************************************************************************
- * INCLUDES
+ * INCLUDE
  **************************************************************************************/
 
-#include "StateBase.h"
-
-#include <l3xz_gait_ctrl/types/Point3D.h>
+#include <tuple>
+#include <vector>
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-namespace l3xz::gait::state
+namespace l3xz
 {
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * TYPEDEF
  **************************************************************************************/
 
-class StandUp : public StateBase
-{
-public:
-  StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock);
-  virtual ~StandUp() { }
-  virtual void onEnter(ControllerInput const & input) override;
-  virtual void onExit() override;
-  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
-
-private:
-  PointVector::const_iterator _citer;
-};
+typedef std::tuple<float /* x */, float /* y */, float /* z */> Point3D;
+typedef std::vector<Point3D> PointVector;
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-} /* l3xz::gait::state */
-
-#endif /* STANDUP_STATE_H_ */
+} /* l3xz */

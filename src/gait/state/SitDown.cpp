@@ -25,7 +25,7 @@ namespace l3xz::gait::state
  * CONSTANTS
  **************************************************************************************/
 
-static std::vector<std::tuple<float /* x */, float /* y */, float /* z */>> const SIT_DOWN_TRAJ =
+static PointVector const SIT_DOWN_TRAJ =
   {
     {-210.0f, 0.0f, -260.0f},
     {-210.0f, 0.0f, -255.0f},
