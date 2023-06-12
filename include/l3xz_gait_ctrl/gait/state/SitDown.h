@@ -10,9 +10,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "StateBase.h"
-
-#include <l3xz_gait_ctrl/types/Point3D.h>
+#include "PositionTrajectory.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -22,20 +20,51 @@ namespace l3xz::gait::state
 {
 
 /**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+static PointVector const SIT_DOWN_TRAJ =
+  {
+    {-210.0f, 0.0f, -260.0f},
+    {-210.0f, 0.0f, -255.0f},
+    {-210.0f, 0.0f, -250.0f},
+    {-210.0f, 0.0f, -245.0f},
+    {-209.0f, 0.0f, -240.0f},
+    {-209.0f, 0.0f, -235.0f},
+    {-208.0f, 0.0f, -230.0f},
+    {-208.0f, 0.0f, -225.0f},
+    {-207.0f, 0.0f, -220.0f},
+    {-207.0f, 0.0f, -215.0f},
+    {-206.0f, 0.0f, -210.0f},
+    {-206.0f, 0.0f, -205.0f},
+    {-205.0f, 0.0f, -200.0f},
+    {-205.0f, 0.0f, -195.0f},
+    {-204.0f, 0.0f, -190.0f},
+    {-204.0f, 0.0f, -185.0f},
+    {-203.0f, 0.0f, -180.0f},
+    {-203.0f, 0.0f, -175.0f},
+    {-212.0f, 0.0f, -170.0f},
+    {-202.0f, 0.0f, -165.0f},
+    {-201.0f, 0.0f, -160.0f},
+    {-201.0f, 0.0f, -155.0f},
+    {-200.0f, 0.0f, -150.0f},
+    {-200.0f, 0.0f, -145.0f},
+    {-200.0f, 0.0f, -140.0f},
+    {-200.0f, 0.0f, -135.0f},
+  };
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class SitDown : public StateBase
+class SitDown : public PositionTrajectory
 {
 public:
-  SitDown(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock);
-  virtual ~SitDown() { }
-  virtual void onEnter(ControllerInput const & input) override;
-  virtual void onExit() override;
-  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
-
-private:
-  PointVector::const_iterator _citer;
+  SitDown(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
+  : PositionTrajectory(logger, clock, SIT_DOWN_TRAJ, PositionTrajectory::NextState::Sitting)
+  { }
+  virtual ~SitDown()
+  { }
 };
 
 /**************************************************************************************
