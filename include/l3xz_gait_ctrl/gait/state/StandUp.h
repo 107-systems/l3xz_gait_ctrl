@@ -59,8 +59,14 @@ static PointVector const STAND_UP_TRAJ =
 class StandUp : public PositionTrajectory
 {
 public:
+  static Point3D constexpr START = std::make_tuple(-200.0f, 0.0f, -140.0f);
+  static Point3D constexpr STOP  = std::make_tuple(-210.0f, 0.0f, -260.0f);
+
   StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
-  : PositionTrajectory(logger, clock, STAND_UP_TRAJ, PositionTrajectory::NextState::Standing)
+  : PositionTrajectory(logger,
+                       clock,
+                       calc_point_vector(START, STOP, 20),
+                       PositionTrajectory::NextState::Standing)
   { }
   virtual ~StandUp()
   { }
