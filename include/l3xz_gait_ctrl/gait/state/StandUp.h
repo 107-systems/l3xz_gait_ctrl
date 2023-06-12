@@ -4,14 +4,13 @@
  * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
-#ifndef STANDUP_STATE_H_
-#define STANDUP_STATE_H_
+#pragma once
 
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include "StateBase.h"
+#include "PositionTrajectory.h"
 
 #include <l3xz_gait_ctrl/types/Point3D.h>
 
@@ -23,20 +22,50 @@ namespace l3xz::gait::state
 {
 
 /**************************************************************************************
+ * CONST
+ **************************************************************************************/
+
+static PointVector const STAND_UP_TRAJ =
+  {
+    {-200.0f, 0.0f, -140.0f},
+    {-201.0f, 0.0f, -145.0f},
+    {-201.0f, 0.0f, -150.0f},
+    {-202.0f, 0.0f, -155.0f},
+    {-202.0f, 0.0f, -160.0f},
+    {-203.0f, 0.0f, -165.0f},
+    {-204.0f, 0.0f, -170.0f},
+    {-204.0f, 0.0f, -175.0f},
+    {-205.0f, 0.0f, -180.0f},
+    {-205.0f, 0.0f, -185.0f},
+    {-205.0f, 0.0f, -190.0f},
+    {-206.0f, 0.0f, -195.0f},
+    {-207.0f, 0.0f, -200.0f},
+    {-207.0f, 0.0f, -205.0f},
+    {-208.0f, 0.0f, -210.0f},
+    {-208.0f, 0.0f, -215.0f},
+    {-209.0f, 0.0f, -220.0f},
+    {-209.0f, 0.0f, -225.0f},
+    {-209.0f, 0.0f, -230.0f},
+    {-210.0f, 0.0f, -235.0f},
+    {-209.0f, 0.0f, -240.0f},
+    {-210.0f, 0.0f, -245.0f},
+    {-209.0f, 0.0f, -250.0f},
+    {-210.0f, 0.0f, -255.0f},
+    {-210.0f, 0.0f, -260.0f}
+  };
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class StandUp : public StateBase
+class StandUp : public PositionTrajectory
 {
 public:
-  StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock);
-  virtual ~StandUp() { }
-  virtual void onEnter(ControllerInput const & input) override;
-  virtual void onExit() override;
-  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
-
-private:
-  PointVector::const_iterator _citer;
+  StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
+  : PositionTrajectory(logger, clock, STAND_UP_TRAJ, PositionTrajectory::NextState::Standing)
+  { }
+  virtual ~StandUp()
+  { }
 };
 
 /**************************************************************************************
@@ -44,5 +73,3 @@ private:
  **************************************************************************************/
 
 } /* l3xz::gait::state */
-
-#endif /* STANDUP_STATE_H_ */
