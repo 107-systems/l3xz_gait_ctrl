@@ -12,6 +12,8 @@
 
 #include "StateBase.h"
 
+#include "StandUp.h"
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -28,9 +30,23 @@ class Sitting : public StateBase
 public:
   Sitting(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
   virtual ~Sitting() { }
-  virtual void onEnter(ControllerInput const & input) override;
-  virtual void onExit() override;
-  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
+  virtual void onEnter(ControllerInput const & /* input */) override
+  {
+    RCLCPP_INFO(_logger, "Sitting ENTER");
+  }
+  virtual void onExit() override
+  {
+    RCLCPP_INFO(_logger, "Sitting EXIT");
+  }
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output) override
+  {
+    ControllerOutput next_output = prev_output;
+
+    if (input.get_request_up())
+      return std::tuple(new StandUp(_logger, _clock), next_output);
+    else
+      return std::tuple(this, next_output);
+  }
 };
 
 /**************************************************************************************
