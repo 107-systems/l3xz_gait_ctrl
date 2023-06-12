@@ -11,6 +11,7 @@
 #include <l3xz_gait_ctrl/gait/state/PositionTrajectory.h>
 
 #include <l3xz_gait_ctrl/gait/state/Sitting.h>
+#include <l3xz_gait_ctrl/gait/state/Standing.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
@@ -25,10 +26,11 @@ namespace l3xz::gait::state
  * CTOR/DTOR
  **************************************************************************************/
 
-PositionTrajectory::PositionTrajectory(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, PointVector const & point_vect)
+PositionTrajectory::PositionTrajectory(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, PointVector const & point_vect, NextState const next_state)
 : StateBase(logger, clock)
 , _point_vect{point_vect}
 , _citer{_point_vect.cbegin()}
+, _next_state{next_state}
 {
 
 }
@@ -149,7 +151,12 @@ std::tuple<StateBase *, ControllerOutput> PositionTrajectory::update(kinematic::
   if (_citer != _point_vect.cend())
     return std::tuple(this, next_output);
 
-  return std::tuple(new Sitting(_logger, _clock), next_output);
+  if      (_next_state == NextState::Sitting)
+    return std::tuple(new Sitting(_logger, _clock), next_output);
+  else if (_next_state == NextState::Standing)
+    return std::tuple(new Standing(_logger, _clock), next_output);
+  else
+    return std::tuple(this, next_output); /* This should never happen. */
 }
 
 /**************************************************************************************

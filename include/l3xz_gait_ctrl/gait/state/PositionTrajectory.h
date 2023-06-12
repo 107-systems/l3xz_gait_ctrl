@@ -28,7 +28,8 @@ namespace l3xz::gait::state
 class PositionTrajectory : public StateBase
 {
 public:
-  PositionTrajectory(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, PointVector const & point_vect);
+  enum class NextState { Sitting, Standing };
+  PositionTrajectory(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, PointVector const & point_vect, NextState const next_state);
   virtual ~PositionTrajectory() { }
   virtual void onEnter(ControllerInput const & input) override;
   virtual void onExit() override;
@@ -37,6 +38,7 @@ public:
 private:
   PointVector const _point_vect;
   PointVector::const_iterator _citer;
+  NextState const _next_state;
 };
 
 /**************************************************************************************
