@@ -65,7 +65,8 @@ std::tuple<StateBase *, ControllerOutput> PositionTrajectory::update(kinematic::
     /* Calculate required target angles for desired
      * target position and set the output actuators.
      */
-    auto [target_x, target_y, target_z] = *_citer;
+    Point3D const tip_target = *_citer;
+    auto const [target_x, target_y, target_z] = tip_target;
 
     kinematic::IK_Input const ik_input(target_x,
                                        target_y,
@@ -109,11 +110,12 @@ std::tuple<StateBase *, ControllerOutput> PositionTrajectory::update(kinematic::
       return {this, next_output};
     }
 
-    float const target_err = sqrt(
-      pow((fk_output.value().tibia_tip_x() - target_x), 2.0f) +
-      pow((fk_output.value().tibia_tip_y() - target_y), 2.0f) +
-      pow((fk_output.value().tibia_tip_z() - target_z), 2.0f)
-    );
+    Point3D const tip_actual = std::make_tuple(
+      fk_output.value().tibia_tip_x(),
+      fk_output.value().tibia_tip_y(),
+      fk_output.value().tibia_tip_z());
+
+    float const target_err = euclid_distance(tip_target, tip_actual);
 
     if (target_err > 20.0f)
     {
