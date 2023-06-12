@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cassert>
 
-static constexpr float PHASE_INCREMENT_ABS = 0.0005f;
+static constexpr float PHASE_INCREMENT_ABS = 0.001f;
 
 /// This is like the simple case above but the samples form a closed trajectory (back is interpolated with the front).
 /// Negative values interpolate from the end (1+x).

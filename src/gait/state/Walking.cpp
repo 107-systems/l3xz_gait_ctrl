@@ -14,6 +14,8 @@
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
+#include <l3xz_gait_ctrl/types/Point3D.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -53,28 +55,97 @@ void Walking::onExit()
 std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
   ControllerOutput next_output = prev_output;
+
+  bool all_target_positions_reached = true;
+  std::stringstream target_position_not_reached_list;
+
   for (const auto leg : LEG_LIST)
   {
     double const coxa_deg_actual  = input.get_angle_deg(leg, Joint::Coxa );
     double const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
     double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
     const auto pos = sampleFootTrajectory(getLegTraits(leg), _phase);
-    kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
-                                               coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+
+    /* Calculate required target angles for desired
+     * target position and set the output actuators.
+     */
+    Point3D const tip_target = std::make_tuple(pos(0), pos(1), pos(2));
+    auto const [target_x, target_y, target_z] = tip_target;
+
+    kinematic::IK_Input const ik_input(target_x,
+                                       target_y,
+                                       target_z,
+                                       coxa_deg_actual,
+                                       femur_deg_actual,
+                                       tibia_deg_actual);
     auto const ik_output = engine.ik_solve(ik_input);
-    if (!ik_output.has_value()) {
-      RCLCPP_INFO(_logger, "Walking::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
-        pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+
+    if (!ik_output.has_value())
+    {
+      RCLCPP_ERROR(_logger,
+                   "engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+                   target_x,
+                   target_y,
+                   target_z,
+                   coxa_deg_actual,
+                   femur_deg_actual,
+                   tibia_deg_actual);
       return {this, next_output};
     }
+
+    /* Set output to the angle actuators. */
     next_output.set_angle_deg(leg, Joint::Coxa,  ik_output.value().coxa_angle_deg ());
     next_output.set_angle_deg(leg, Joint::Femur, ik_output.value().femur_angle_deg());
     next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().tibia_angle_deg());
-    if (leg == Leg::LeftFront)
+
+    /* Check if target position has been reached: First calculate
+     * the Euclidean distance between the actual and the target position.
+     */
+    kinematic::FK_Input const fk_input(coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+    auto const fk_output = engine.fk_solve(fk_input);
+
+    if (!fk_output.has_value())
     {
-      RCLCPP_INFO(_logger, "Walking::update Front/Left foot pos: %f %f %f", pos(0), pos(1), pos(2));
+      RCLCPP_ERROR(_logger,
+                   "engine.fk_solve failed for (%0.2f, %0.2f, %0.2f)",
+                   coxa_deg_actual,
+                   femur_deg_actual,
+                   tibia_deg_actual);
+      return {this, next_output};
+    }
+
+    float const target_err = fabs(fk_output.value().tibia_tip_z() - target_z);
+
+    if (target_err > 10.0f)
+    {
+      RCLCPP_INFO_THROTTLE(_logger,
+                           *_clock,
+                           1000,
+                           "target = (%0.2f, %0.2f, %0.2f), fk_output = (%0.2f, %0.2f, %0.2f), target_err = %0.2f",
+                           target_x,
+                           target_y,
+                           target_z,
+                           fk_output.value().tibia_tip_x(),
+                           fk_output.value().tibia_tip_y(),
+                           fk_output.value().tibia_tip_z(),
+                           target_err);
+
+      all_target_positions_reached = false;
+      target_position_not_reached_list << LegToStr(leg) << " ";
     }
   }
+
+  if (!all_target_positions_reached)
+  {
+    RCLCPP_INFO_THROTTLE(_logger,
+                         *_clock,
+                         1000,
+                         "target position not reached for [ %s]",
+                         target_position_not_reached_list.str().c_str());
+
+    return std::tuple(this, next_output);
+  }
+
   _phase += _phase_increment;
   return std::tuple((std::abs(_phase) < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger, _clock)), next_output);
 }
