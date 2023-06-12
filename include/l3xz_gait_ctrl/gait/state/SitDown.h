@@ -32,7 +32,7 @@ public:
   SitDown(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
   : PositionTrajectory(logger,
                        clock,
-                       calc_point_vector(START, STOP, 20),
+                       calc_point_vector(START, STOP, 40),
                        PositionTrajectory::NextState::Sitting)
   { }
   virtual ~SitDown()

@@ -117,7 +117,7 @@ std::tuple<StateBase *, ControllerOutput> PositionTrajectory::update(kinematic::
 
     float const target_err = euclid_distance(tip_target, tip_actual);
 
-    if (target_err > 20.0f)
+    if (target_err > 10.0f)
     {
       RCLCPP_INFO_THROTTLE(_logger,
                            *_clock,
