@@ -13,6 +13,10 @@
 
 #include "StateBase.h"
 
+#include "SitDown.h"
+#include "Turning.h"
+#include "Walking.h"
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -29,9 +33,29 @@ class Standing : public StateBase
 public:
   Standing(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
   virtual ~Standing() { }
-  virtual void onEnter() override;
-  virtual void onExit() override;
-  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
+  virtual void onEnter(ControllerInput const & /* input */) override
+  {
+    RCLCPP_INFO(_logger, "Standing ENTER");
+  }
+  virtual void onExit() override
+  {
+    RCLCPP_INFO(_logger, "Standing EXIT");
+  }
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output) override
+  {
+    ControllerOutput next_output = prev_output;
+
+    if (input.get_request_down())
+      return std::tuple(new SitDown(_logger, _clock), next_output);
+
+    if (std::abs(input.teleop_linear_velocity_x()) > 0.2f)
+      return std::tuple(new Walking(_logger, _clock, input.teleop_linear_velocity_x() > 0), next_output);
+
+    if (std::abs(input.teleop_angular_velocity_z()) > 0.2f)
+      return std::tuple(new Turning(_logger, _clock, input.teleop_angular_velocity_z() > 0), next_output);
+
+    return std::tuple(this, next_output);
+  }
 };
 
 /**************************************************************************************

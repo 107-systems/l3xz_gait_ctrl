@@ -10,7 +10,7 @@
  * INCLUDES
  **************************************************************************************/
 
-#include "PositionTrajectory.h"
+#include "StateBase.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -23,20 +23,17 @@ namespace l3xz::gait::state
  * CLASS DECLARATION
  **************************************************************************************/
 
-class StandUp : public PositionTrajectory
+class Init_Femur : public StateBase
 {
 public:
-  static Point3D constexpr START = std::make_tuple(-200.0f, 0.0f, -140.0f);
-  static Point3D constexpr STOP  = std::make_tuple(-210.0f, 0.0f, -260.0f);
+  Init_Femur(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
+  virtual ~Init_Femur() { }
+  virtual void onEnter(ControllerInput const & input) override;
+  virtual void onExit() override;
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 
-  StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
-  : PositionTrajectory(logger,
-                       clock,
-                       calc_point_vector(START, STOP, 40),
-                       PositionTrajectory::NextState::Standing)
-  { }
-  virtual ~StandUp()
-  { }
+private:
+  std::map<Leg, float> _coxa_initial_angle_deg_map, _tibia_initial_angle_deg_map;
 };
 
 /**************************************************************************************

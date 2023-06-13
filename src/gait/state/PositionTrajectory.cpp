@@ -8,13 +8,12 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_gait_ctrl/gait/state/Walking.h>
+#include <l3xz_gait_ctrl/gait/state/PositionTrajectory.h>
 
+#include <l3xz_gait_ctrl/gait/state/Sitting.h>
 #include <l3xz_gait_ctrl/gait/state/Standing.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>
-
-#include <l3xz_gait_ctrl/types/Point3D.h>
 
 /**************************************************************************************
  * NAMESPACE
@@ -23,53 +22,50 @@
 namespace l3xz::gait::state
 {
 
-const float PITCH_MULT  =    0.3F;
-const float FOOT_X      = -210.0F;
-const float FOOT_Z_UP   = -200.0F;
-const float FOOT_Z_DOWN = -260.0F;
-const std::vector<KDL::Vector> Walking::FOOT_TRAJECTORY{
-  {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_UP},
-  {FOOT_X, +103.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, + 80.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, + 57.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, + 34.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, + 11.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, - 11.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, - 34.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, - 57.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, - 80.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, -103.5 * PITCH_MULT, FOOT_Z_DOWN},
-  {FOOT_X, -103.5 * PITCH_MULT, FOOT_Z_UP},
-};
+/**************************************************************************************
+ * CTOR/DTOR
+ **************************************************************************************/
 
-void Walking::onEnter(ControllerInput const & /* input */)
+PositionTrajectory::PositionTrajectory(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, PointVector const & point_vect, NextState const next_state)
+: StateBase(logger, clock)
+, _point_vect{point_vect}
+, _citer{_point_vect.cbegin()}
+, _next_state{next_state}
 {
-  RCLCPP_INFO(_logger, "Walking ENTER");
+
 }
 
-void Walking::onExit()
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void PositionTrajectory::onEnter(ControllerInput const & /* input */)
 {
-  RCLCPP_INFO(_logger, "Walking EXIT");
+  RCLCPP_INFO(_logger, "PositionTrajectory ENTER");
 }
 
-std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
+void PositionTrajectory::onExit()
+{
+  RCLCPP_INFO(_logger, "PositionTrajectory EXIT");
+}
+
+std::tuple<StateBase *, ControllerOutput> PositionTrajectory::update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output)
 {
   ControllerOutput next_output = prev_output;
 
   bool all_target_positions_reached = true;
   std::stringstream target_position_not_reached_list;
 
-  for (const auto leg : LEG_LIST)
+  for (auto leg : LEG_LIST)
   {
     double const coxa_deg_actual  = input.get_angle_deg(leg, Joint::Coxa );
     double const femur_deg_actual = input.get_angle_deg(leg, Joint::Femur);
     double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
-    const auto pos = sampleFootTrajectory(getLegTraits(leg), _phase);
 
     /* Calculate required target angles for desired
      * target position and set the output actuators.
      */
-    Point3D const tip_target = std::make_tuple(pos(0), pos(1), pos(2));
+    Point3D const tip_target = *_citer;
     auto const [target_x, target_y, target_z] = tip_target;
 
     kinematic::IK_Input const ik_input(target_x,
@@ -114,7 +110,12 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
       return {this, next_output};
     }
 
-    float const target_err = fabs(fk_output.value().tibia_tip_z() - target_z);
+    Point3D const tip_actual = std::make_tuple(
+      fk_output.value().tibia_tip_x(),
+      fk_output.value().tibia_tip_y(),
+      fk_output.value().tibia_tip_z());
+
+    float const target_err = euclid_distance(tip_target, tip_actual);
 
     if (target_err > 10.0f)
     {
@@ -146,46 +147,22 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
     return std::tuple(this, next_output);
   }
 
-  _phase += _phase_increment;
-  return std::tuple((std::abs(_phase) < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger, _clock)), next_output);
+  RCLCPP_INFO(_logger, "transitioning to next step on sitting down trajectory.");
+  _citer++;
+
+  if (_citer != _point_vect.cend())
+    return std::tuple(this, next_output);
+
+  if      (_next_state == NextState::Sitting)
+    return std::tuple(new Sitting(_logger, _clock), next_output);
+  else if (_next_state == NextState::Standing)
+    return std::tuple(new Standing(_logger, _clock), next_output);
+  else
+    return std::tuple(this, next_output); /* This should never happen. */
 }
 
-[[nodiscard]] KDL::Vector Walking::sampleFootTrajectory(const LegTraits lt, const float phase)
-{
-  auto pos = interpolatePiecewiseClosed(wrapPhase(phase + (lt.index / 6.0F)), FOOT_TRAJECTORY.data(), FOOT_TRAJECTORY.size());
-  /*
-  if (lt.is_front)
-  {
-    pos[1] += 100;
-  }
-  if (lt.is_rear)
-  {
-    pos[1] -= 80;
-  }
-   */
-  pos[1] *= lt.is_left ? -1.0F : +1.0F;
-  return pos;
-}
-
-[[nodiscard]] LegTraits Walking::getLegTraits(const Leg leg)
-{
-  static const std::array<Leg, 6> ref{{
-    Leg::RightFront,
-    Leg::LeftMiddle,
-    Leg::RightBack,
-    Leg::LeftFront,
-    Leg::RightMiddle,
-    Leg::LeftBack,
-  }};
-  std::uint8_t idx = 0;
-  while (ref.at(idx) != leg)
-  {
-    idx++;
-  }
-  const bool is_left  = (idx % 2) != 0;
-  const bool is_front = (idx % 3) == 0;
-  const bool is_rear  = (idx % 3) == 2;
-  return {idx, is_left, is_front, is_rear};
-}
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
 
 } /* l3xz::gait::state */

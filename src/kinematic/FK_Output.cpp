@@ -25,9 +25,10 @@ namespace l3xz::kinematic
  **************************************************************************************/
 
 FK_Output::FK_Output(KDL::Frame const & tibia_tip_frame)
-: _tibia_tip_x{tibia_tip_frame(3,0)}
-, _tibia_tip_y{tibia_tip_frame(3,1)}
-, _tibia_tip_z{tibia_tip_frame(3,2)}
+:  _pos_vec(tibia_tip_frame.p)
+, _tibia_tip_x{_pos_vec(0)}
+, _tibia_tip_y{_pos_vec(1)}
+, _tibia_tip_z{_pos_vec(2)}
 { }
 
 /**************************************************************************************
@@ -38,7 +39,7 @@ std::string FK_Output::toStr() const
 {
   std::stringstream msg;
 
-  msg << "("
+  msg << "["
       << std::fixed
       << std::setprecision(2) 
       << std::setfill(' ')
@@ -55,7 +56,8 @@ std::string FK_Output::toStr() const
       << std::setprecision(2) 
       << std::setfill(' ')
       << std::setw(6)
-      << _tibia_tip_z;
+      << _tibia_tip_z
+      << "]";
 
   return msg.str();
 }

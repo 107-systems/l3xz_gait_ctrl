@@ -49,7 +49,12 @@ public:
                    float const right_back_femur_angle_target,
                    float const right_back_tibia_angle_target);
 
-  ControllerOutput() : ControllerOutput(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f) { }
+  ControllerOutput() : ControllerOutput(180.0f, 0.0f, 0.0f,
+                                        180.0f, 0.0f, 0.0f,
+                                        180.0f, 0.0f, 0.0f,
+                                        180.0f, 0.0f, 0.0f,
+                                        180.0f, 0.0f, 0.0f,
+                                        180.0f, 0.0f, 0.0f) { }
 
   float get_angle_deg(Leg const leg, Joint const joint) const;
   void  set_angle_deg(Leg const leg, Joint const joint, float const angle_deg);

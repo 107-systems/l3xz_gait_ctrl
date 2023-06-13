@@ -23,19 +23,19 @@ namespace l3xz::gait::state
  * CLASS DECLARATION
  **************************************************************************************/
 
-class StandUp : public PositionTrajectory
+class SitDown : public PositionTrajectory
 {
 public:
-  static Point3D constexpr START = std::make_tuple(-200.0f, 0.0f, -140.0f);
-  static Point3D constexpr STOP  = std::make_tuple(-210.0f, 0.0f, -260.0f);
+  static Point3D constexpr START = std::make_tuple(-210.0f, 0.0f, -260.0f);
+  static Point3D constexpr STOP  = std::make_tuple(-200.0f, 0.0f, -135.0f);
 
-  StandUp(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
+  SitDown(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock)
   : PositionTrajectory(logger,
                        clock,
                        calc_point_vector(START, STOP, 40),
-                       PositionTrajectory::NextState::Standing)
+                       PositionTrajectory::NextState::Sitting)
   { }
-  virtual ~StandUp()
+  virtual ~SitDown()
   { }
 };
 

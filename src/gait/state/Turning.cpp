@@ -15,6 +15,8 @@
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
+#include <l3xz_gait_ctrl/gait/util/Util.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -26,7 +28,7 @@ namespace l3xz::gait::state
  * CLASS MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Turning::onEnter()
+void Turning::onEnter(ControllerInput const & /* input */)
 {
   RCLCPP_INFO(_logger, "Turning ENTER");
 }

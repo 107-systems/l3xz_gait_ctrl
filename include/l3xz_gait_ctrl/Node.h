@@ -15,6 +15,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
+#include <std_msgs/msg/bool.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <std_msgs/msg/u_int64.hpp>
 
@@ -60,8 +61,16 @@ private:
   void init_heartbeat();
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _robot_sub;
+  std::optional<std::chrono::steady_clock::time_point> _opt_last_robot_msg;
   std::map<LegJointKey,
            rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr> _angle_actual_sub;
+  std::map<LegJointKey,
+           std::optional<std::chrono::steady_clock::time_point>> _opt_last_angle_actual_msg;
+  std::map<Leg,
+           rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr> _tibia_endpoint_switch_sub;
+  std::map<Leg,
+           std::optional<std::chrono::steady_clock::time_point>> _opt_last_tibia_endpoint_switch_msg;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr _robot_req_up_sub, _robot_req_down_sub;
   void init_sub();
 
   std::map<LegJointKey,

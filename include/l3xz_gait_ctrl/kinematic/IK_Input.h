@@ -42,7 +42,7 @@ public:
   {
     _joint_positions = KDL::JntArray(3);
     _joint_positions(0) = coxa_angle_deg  * M_PI / 180.0;
-    _joint_positions(1) = femur_angle_deg * M_PI / 180.0;
+    _joint_positions(1) = (-1.0f) * femur_angle_deg * M_PI / 180.0;
     _joint_positions(2) = tibia_angle_deg * M_PI / 180.0;
   }
 

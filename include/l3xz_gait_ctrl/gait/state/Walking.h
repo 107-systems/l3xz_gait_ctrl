@@ -16,6 +16,8 @@
 #include <map>
 #include <list>
 
+#include <l3xz_gait_ctrl/gait/util/Util.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -42,9 +44,13 @@ struct LegTraits final
 class Walking : public StateBase
 {
 public:
-  explicit Walking(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, const bool forward) : StateBase(logger, clock), _phase_increment(forward ? PHASE_INCREMENT_ABS : -PHASE_INCREMENT_ABS) {}
+  static constexpr float PHASE_INCREMENT = 0.001f;
 
-  virtual void onEnter() override;
+  explicit Walking(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock, const bool forward)
+  : StateBase(logger, clock),
+  _phase_increment(forward ? PHASE_INCREMENT : -PHASE_INCREMENT) {}
+
+  virtual void onEnter(ControllerInput const & input) override;
   virtual void onExit() override;
   virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & engine, ControllerInput const & input, ControllerOutput const & prev_output) override;
 
@@ -53,7 +59,6 @@ public:
 
 private:
   static const std::vector<KDL::Vector> FOOT_TRAJECTORY;
-  static constexpr float PHASE_INCREMENT_ABS = 0.001;
 
   const float _phase_increment;
   float _phase = 0;   ///< (-1,+1)

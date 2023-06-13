@@ -63,11 +63,33 @@ public:
   float get_angle_deg(Leg const leg, Joint const joint) const;
   void  set_angle_deg(Leg const leg, Joint const joint, float const val);
 
+  bool is_tibia_endpoint_switch_pressed(Leg const leg) const{
+    return _is_tibia_endpoint_switch_pressed_map.at(leg);
+  }
+  void set_is_tibia_endpoint_switch_pressed(Leg const leg, bool const is_pressed) {
+    _is_tibia_endpoint_switch_pressed_map[leg] = is_pressed;
+  }
+
+  bool get_request_up() const {
+    return _request_up;
+  }
+  void set_request_up(bool const request_up) {
+    _request_up = request_up;
+  }
+
+  bool get_request_down() const {
+    return _request_down;
+  }
+  void set_request_down(bool const request_down) {
+    _request_down = request_down;
+  }
 
 private:
   float _teleop_linear_velocity_x,
         _teleop_angular_velocity_z;
   std::map<LegJointKey, float> _angle_position_map;
+  std::map<Leg, bool> _is_tibia_endpoint_switch_pressed_map;
+  bool _request_up, _request_down;
 };
 
 /**************************************************************************************

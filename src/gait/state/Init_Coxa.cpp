@@ -8,9 +8,9 @@
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_gait_ctrl/gait/state/Init.h>
+#include <l3xz_gait_ctrl/gait/state/Init_Coxa.h>
 
-#include <l3xz_gait_ctrl/gait/state/StandUp.h>
+#include <l3xz_gait_ctrl/gait/state/Sitting.h>
 
 #include <l3xz_gait_ctrl/const/LegList.h>
 
@@ -25,54 +25,50 @@ namespace l3xz::gait::state
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void Init::onEnter()
+void Init_Coxa::onEnter(ControllerInput const & /* input */)
 {
-  RCLCPP_INFO(_logger, "Init ENTER");
+  RCLCPP_INFO(_logger, "Init_Coxa ENTER");
 }
 
-void Init::onExit()
+void Init_Coxa::onExit()
 {
-  RCLCPP_INFO(_logger, "Init EXIT");
+  RCLCPP_INFO(_logger, "Init_Coxa EXIT");
 }
 
-std::tuple<StateBase *, ControllerOutput> Init::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)
+std::tuple<StateBase *, ControllerOutput> Init_Coxa::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)
 {
   ControllerOutput next_output = prev_output;
 
   bool all_target_angles_reached = true;
+  std::stringstream leg_not_reached_list;
   for (auto leg : LEG_LIST)
   {
     float const coxa_deg_actual = input.get_angle_deg(leg, Joint::Coxa);
     float const coxa_deg_target = 180.0f;
 
-    /* Set output to the angle actuators. */
-    next_output.set_angle_deg(leg, Joint::Coxa, coxa_deg_target);
+    next_output.set_angle_deg(leg, Joint::Coxa,  coxa_deg_target);
 
-    /* Check if target angles have been reached. */
     float const coxa_angle_error = fabs(coxa_deg_actual - coxa_deg_target);
-    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.0f;
+    bool  const coxa_is_initial_angle_reached = coxa_angle_error < 2.5f;
 
-    if (!coxa_is_initial_angle_reached) {
-      RCLCPP_INFO_THROTTLE(_logger,
-                           *_clock,
-                           1000,
-                           "l3xz::gait::state::Init::update: %s coxa target angle not reached", LegToStr(leg).c_str());
+    if (!coxa_is_initial_angle_reached)
+    {
+      leg_not_reached_list << LegToStr(leg) << " ";
       all_target_angles_reached = false;
     }
   }
 
   if (!all_target_angles_reached)
+  {
+    RCLCPP_INFO_THROTTLE(_logger,
+                         *_clock,
+                         1000,
+                         "l3xz::gait::state::Init_Coxa::update: target angle not reached for [ %s]", leg_not_reached_list.str().c_str());
+
     return std::tuple(this, next_output);
+  }
 
-  /* If the robot control joystick is moved after
-   * initialization is complete then we shall transition
-   * into the stand-up state.
-   */
-  if (std::abs(input.teleop_linear_velocity_x()) > 0.4f ||
-      std::abs(input.teleop_angular_velocity_z()) > 0.4f)
-    return std::tuple(new StandUp(_logger, _clock), next_output);
-
-  return std::tuple(this, next_output);
+  return std::tuple(new Sitting(_logger, _clock), next_output);
 }
 
 /**************************************************************************************

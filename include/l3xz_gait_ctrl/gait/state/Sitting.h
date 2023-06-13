@@ -4,14 +4,15 @@
  * Contributors: https://github.com/107-systems/l3xz_gait_ctrl/graphs/contributors.
  */
 
+#pragma once
+
 /**************************************************************************************
  * INCLUDES
  **************************************************************************************/
 
-#include <l3xz_gait_ctrl/gait/state/Standing.h>
+#include "StateBase.h"
 
-#include <l3xz_gait_ctrl/gait/state/Turning.h>
-#include <l3xz_gait_ctrl/gait/state/Walking.h>
+#include "StandUp.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -21,32 +22,32 @@ namespace l3xz::gait::state
 {
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void Standing::onEnter()
+class Sitting : public StateBase
 {
-  RCLCPP_INFO(_logger, "Standing ENTER");
-}
-
-void Standing::onExit()
-{
-  RCLCPP_INFO(_logger, "Standing EXIT");
-}
-
-std::tuple<StateBase *, ControllerOutput> Standing::update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output)
-{
-  ControllerOutput next_output = prev_output;
-  if (std::abs(input.teleop_linear_velocity_x()) > 0.2f)
+public:
+  Sitting(rclcpp::Logger const logger, rclcpp::Clock::SharedPtr const clock) : StateBase(logger, clock) { }
+  virtual ~Sitting() { }
+  virtual void onEnter(ControllerInput const & /* input */) override
   {
-    return std::tuple(new Walking(_logger, _clock, input.teleop_linear_velocity_x() > 0), next_output);
+    RCLCPP_INFO(_logger, "Sitting ENTER");
   }
-  if (std::abs(input.teleop_angular_velocity_z()) > 0.2f)
+  virtual void onExit() override
   {
-    return std::tuple(new Turning(_logger, _clock, input.teleop_angular_velocity_z() > 0), next_output);
+    RCLCPP_INFO(_logger, "Sitting EXIT");
   }
-  return std::tuple(this, next_output);
-}
+  virtual std::tuple<StateBase *, ControllerOutput> update(kinematic::Engine const & /* engine */, ControllerInput const & input, ControllerOutput const & prev_output) override
+  {
+    ControllerOutput next_output = prev_output;
+
+    if (input.get_request_up())
+      return std::tuple(new StandUp(_logger, _clock), next_output);
+    else
+      return std::tuple(this, next_output);
+  }
+};
 
 /**************************************************************************************
  * NAMESPACE

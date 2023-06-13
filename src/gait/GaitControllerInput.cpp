@@ -67,6 +67,16 @@ ControllerInput::ControllerInput(float const teleop_linear_velocity_x,
   _angle_position_map[make_key(Leg::RightBack,   Joint::Coxa)]  = right_back_coxa_angle_actual;
   _angle_position_map[make_key(Leg::RightBack,   Joint::Femur)] = right_back_femur_angle_actual;
   _angle_position_map[make_key(Leg::RightBack,   Joint::Tibia)] = right_back_tibia_angle_actual;
+
+  _is_tibia_endpoint_switch_pressed_map[Leg::LeftFront]   = false;
+  _is_tibia_endpoint_switch_pressed_map[Leg::LeftMiddle]  = false;
+  _is_tibia_endpoint_switch_pressed_map[Leg::LeftBack]    = false;
+  _is_tibia_endpoint_switch_pressed_map[Leg::RightFront]  = false;
+  _is_tibia_endpoint_switch_pressed_map[Leg::RightMiddle] = false;
+  _is_tibia_endpoint_switch_pressed_map[Leg::RightBack]   = false;
+
+  _request_up   = false;
+  _request_down = false;
 }
 
 /**************************************************************************************

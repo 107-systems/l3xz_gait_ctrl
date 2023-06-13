@@ -80,12 +80,12 @@ std::optional<FK_Output> Engine::fk_solve(FK_Input const & fk_input) const
     return std::nullopt;
   }
 
-  std::stringstream msg;
-  msg << "FK results" << std::endl << tibia_tip_frame;
-  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
-  
   FK_Output const fk_output(tibia_tip_frame);
-  RCLCPP_INFO(_logger, "%s", fk_output.toStr().c_str());
+
+  std::stringstream msg;
+  msg << "FK results: KDL frame: " << std::endl << tibia_tip_frame << std::endl <<  "FK_Output = " << fk_output.toStr();
+  RCLCPP_DEBUG(_logger, "%s", msg.str().c_str());
+
   return fk_output;
 }
 
@@ -104,23 +104,27 @@ std::optional<IK_Output> Engine::ik_solve(IK_Input const & ik_input) const
   /* Perform IK calculation. */
   if (auto const rc = _iksolver_pos->CartToJnt(joint_positions_in, ik_input.tibia_tip_frame(), joint_positions_out); rc < 0)
   {
-    printf("[ERROR] Engine::ik_solve, ChainIkSolverPos_NR::CartToJnt failed with %d", rc);
+    RCLCPP_ERROR(_logger, "[ERROR] Engine::ik_solve, ChainIkSolverPos_NR::CartToJnt failed with %d", rc);
     return std::nullopt;
   }
-
-  /* Print/return results. */
-  std::stringstream msg;
-  msg << "IK results" << std::endl;
-  for (size_t r = 0; r < joint_positions_out.rows(); r++)
-    msg << joint_positions_out(r) << std::endl;
-  RCLCPP_INFO(_logger, "%s", msg.str().c_str());
 
   IK_Output const ik_output(
     +joint_positions_out(0),
     -joint_positions_out(1),
     +joint_positions_out(2)
   );
-  RCLCPP_INFO(_logger, "%s", ik_output.toStr().c_str());
+
+  /* Print/return results. */
+  std::stringstream msg;
+  msg << "IK results: KDL::JntArray = [ ";
+  for (size_t r = 0; r < joint_positions_out.rows(); r++)
+    msg << joint_positions_out(r) << " ";
+  msg << " ], ";
+
+  msg << "IK_Output = " << ik_output.toStr();
+
+  RCLCPP_DEBUG(_logger, "%s", msg.str().c_str());
+
   return ik_output;
 }
 

@@ -31,6 +31,7 @@ Node::Node()
 , _gait_ctrl_input{}
 , _gait_ctrl_output{}
 , _node_start{std::chrono::steady_clock::now()}
+, _opt_last_robot_msg{std::nullopt}
 , _prev_ctrl_loop_timepoint{std::chrono::steady_clock::now()}
 {
   init_heartbeat();
@@ -61,6 +62,7 @@ void Node::init_sub()
      1,
      [this](geometry_msgs::msg::Twist::SharedPtr const msg)
      {
+       _opt_last_robot_msg = std::chrono::steady_clock::now();
        _gait_ctrl_input.set_teleop_linear_velocity_x (msg->linear.x);
        _gait_ctrl_input.set_teleop_angular_velocity_z(msg->angular.z);
      });
@@ -68,14 +70,53 @@ void Node::init_sub()
   for (auto leg : LEG_LIST)
     for (auto joint : JOINT_LIST)
     {
+      _opt_last_angle_actual_msg[make_key(leg, joint)] = std::nullopt;
+
       std::stringstream angle_actual_sub_topic;
       angle_actual_sub_topic << "/l3xz/leg/" << LegToStr(leg) << "/" << JointToStr(joint) << "/angle/actual";
 
       _angle_actual_sub[make_key(leg, joint)] = create_subscription<std_msgs::msg::Float32>(
         angle_actual_sub_topic.str(),
         1,
-        [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg) { _gait_ctrl_input.set_angle_deg(leg, joint, msg->data * 180.0f / M_PI); });
+        [this, leg, joint](std_msgs::msg::Float32::SharedPtr const msg)
+        {
+          _opt_last_angle_actual_msg[make_key(leg, joint)] = std::chrono::steady_clock::now();
+          _gait_ctrl_input.set_angle_deg(leg, joint, msg->data * 180.0f / M_PI);
+        });
     }
+
+  for (auto leg : LEG_LIST)
+  {
+    _opt_last_tibia_endpoint_switch_msg[leg] = std::nullopt;
+
+    std::stringstream tibia_endpoint_switch_sub_topic;
+    tibia_endpoint_switch_sub_topic << "/l3xz/leg/" << LegToStr(leg) << "/tibia_endpoint_switch/actual";
+
+    _tibia_endpoint_switch_sub[leg] = create_subscription<std_msgs::msg::Bool>(
+      tibia_endpoint_switch_sub_topic.str(),
+      1,
+      [this, leg](std_msgs::msg::Bool::SharedPtr const msg)
+      {
+        _opt_last_tibia_endpoint_switch_msg[leg] = std::chrono::steady_clock::now();
+        _gait_ctrl_input.set_is_tibia_endpoint_switch_pressed(leg, msg->data);
+      });
+  }
+
+  _robot_req_up_sub = create_subscription<std_msgs::msg::Bool>(
+    "/l3xz/cmd_robot/req_up",
+    1,
+    [this](std_msgs::msg::Bool::SharedPtr const msg)
+    {
+      _gait_ctrl_input.set_request_up(msg->data);
+    });
+
+  _robot_req_down_sub = create_subscription<std_msgs::msg::Bool>(
+    "/l3xz/cmd_robot/req_down",
+    1,
+    [this](std_msgs::msg::Bool::SharedPtr const msg)
+    {
+      _gait_ctrl_input.set_request_down(msg->data);
+    });
 }
 
 void Node::init_pub()
@@ -105,6 +146,24 @@ void Node::ctrl_loop()
                          std::chrono::duration_cast<std::chrono::milliseconds>(ctrl_loop_rate).count());
   _prev_ctrl_loop_timepoint = now;
 
+  /* Check if we have valid input data, that is that
+   * every input message has been timely received.
+   */
+  if (!_opt_last_robot_msg.has_value()) {
+    RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "no robot message has been received yet.");
+    return;
+  }
+  for (auto leg : LEG_LIST)
+    for (auto joint : JOINT_LIST)
+      if (!_opt_last_angle_actual_msg.at(make_key(leg, joint)).has_value()) {
+        RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "no actual angle message has been received yet.");
+        return;
+      }
+  for (auto leg : LEG_LIST)
+    if (!_opt_last_tibia_endpoint_switch_msg.at(leg).has_value()) {
+      RCLCPP_WARN_THROTTLE(get_logger(), *get_clock(), 2000, "no tibia endpoint switch message has been received yet.");
+      return;
+    }
 
   /* Calculate the joint angle set points based on the
    * current joint position, kinematic constraints and

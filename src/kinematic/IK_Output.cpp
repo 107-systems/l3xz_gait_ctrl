@@ -40,7 +40,7 @@ std::string IK_Output::toStr() const
 {
   std::stringstream msg;
 
-  msg << "("
+  msg << "["
       << std::fixed
       << std::setprecision(2) 
       << std::setfill(' ')
@@ -57,7 +57,8 @@ std::string IK_Output::toStr() const
       << std::setprecision(2) 
       << std::setfill(' ')
       << std::setw(6)
-      << _tibia_angle_deg;
+      << _tibia_angle_deg
+      << "]";
 
   return msg.str();
 }
