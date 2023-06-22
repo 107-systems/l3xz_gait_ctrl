@@ -24,6 +24,7 @@
 #include <geometry_msgs/msg/twist.hpp>
 
 #include <ros2_heartbeat/Publisher.h>
+#include <ros2_loop_rate_monitor/Monitor.h>
 
 #include <l3xz_gait_ctrl/kinematic/Engine.h>
 
@@ -78,8 +79,8 @@ private:
   rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr _odom_pub;
   void init_pub();
 
-  std::chrono::steady_clock::time_point _prev_ctrl_loop_timepoint;
   static std::chrono::milliseconds constexpr CTRL_LOOP_RATE{10};
+  loop_rate::Monitor::SharedPtr _ctrl_loop_rate_monitor;
   rclcpp::TimerBase::SharedPtr _ctrl_loop_timer;
   void ctrl_loop();
 };
