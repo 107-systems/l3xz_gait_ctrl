@@ -34,6 +34,11 @@ jobs:
       with:
         required-ros-distributions: ${{ matrix.ros_distro }}
 
+    - name: Prepare Eigen3 library
+      run: |
+        sudo apt-get install libeigen3-dev
+        sudo ln -s /usr/include/eigen3/Eigen /usr/include/Eigen
+
     - name: Prepare ROS2 workspace
       run: | 
         mkdir -p ${{github.workspace}}/ros2_ws/src
