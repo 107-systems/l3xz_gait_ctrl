@@ -15,6 +15,7 @@
   <depend>std_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>l3xz</depend>
   <depend>ros2_heartbeat</depend>
   <depend>ros2_loop_rate_monitor</depend>
 

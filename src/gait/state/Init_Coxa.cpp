@@ -12,7 +12,7 @@
 
 #include <l3xz_gait_ctrl/gait/state/Sitting.h>
 
-#include <l3xz_gait_ctrl/const/LegList.h>
+#include <l3xz/l3xz.h>
 
 /**************************************************************************************
  * NAMESPACE

@@ -10,9 +10,6 @@
 
 #include <l3xz_gait_ctrl/Node.h>
 
-#include <l3xz_gait_ctrl/const/LegList.h>
-#include <l3xz_gait_ctrl/const/JointList.h>
-
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
