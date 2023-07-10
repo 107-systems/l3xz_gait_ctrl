@@ -14,40 +14,35 @@ find_package(std_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(l3xz REQUIRED)
+find_package(l3xz_kinematic_engine REQUIRED)
 find_package(ros2_heartbeat REQUIRED)
 find_package(ros2_loop_rate_monitor REQUIRED)
-find_package(orocos_kdl REQUIRED)
 #######################################################################################
-include_directories(${L3XZ_GAIT_CTRL_TARGET}
-  include
-  ${orocos_kdl_INCLUDE_DIRS}
+include_directories(
+        ${L3XZ_GAIT_CTRL_TARGET} include
 )
 #######################################################################################
-add_executable(${L3XZ_GAIT_CTRL_TARGET}
-  src/gait/state/Init_Coxa.cpp
-  src/gait/state/Init_Femur.cpp
-  src/gait/state/Init_Tibia.cpp
-  src/gait/state/PositionTrajectory.cpp
-  src/gait/state/Turning.cpp
-  src/gait/state/Walking.cpp
-  src/gait/GaitController.cpp
-  src/gait/GaitControllerInput.cpp
-  src/gait/GaitControllerOutput.cpp
+add_executable(
+        ${L3XZ_GAIT_CTRL_TARGET}
 
-  src/kinematic/Engine.cpp
-  src/kinematic/FK_Output.cpp
-  src/kinematic/IK_Output.cpp
+        src/gait/state/Init_Coxa.cpp
+        src/gait/state/Init_Femur.cpp
+        src/gait/state/Init_Tibia.cpp
+        src/gait/state/PositionTrajectory.cpp
+        src/gait/state/Turning.cpp
+        src/gait/state/Walking.cpp
+        src/gait/GaitController.cpp
+        src/gait/GaitControllerInput.cpp
+        src/gait/GaitControllerOutput.cpp
 
-  src/Node.cpp
+        src/Node.cpp
 
-  src/main.cpp
+        src/main.cpp
 )
 #######################################################################################
 target_compile_features(${L3XZ_GAIT_CTRL_TARGET} PRIVATE cxx_std_17)
 #######################################################################################
-target_link_libraries(${L3XZ_GAIT_CTRL_TARGET} orocos-kdl)
-#######################################################################################
-ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp std_msgs nav_msgs geometry_msgs l3xz ros2_heartbeat ros2_loop_rate_monitor)
+ament_target_dependencies(${L3XZ_GAIT_CTRL_TARGET} rclcpp std_msgs nav_msgs geometry_msgs l3xz l3xz_kinematic_engine ros2_heartbeat ros2_loop_rate_monitor)
 #######################################################################################
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -60,13 +55,13 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 #######################################################################################
-install(TARGETS
-  ${L3XZ_GAIT_CTRL_TARGET}
-  DESTINATION lib/${PROJECT_NAME}
+install(
+        TARGETS ${L3XZ_GAIT_CTRL_TARGET}
+        DESTINATION lib/${PROJECT_NAME}
 )
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}
+install(
+        DIRECTORY launch
+        DESTINATION share/${PROJECT_NAME}
 )
 #######################################################################################
 ament_package()
