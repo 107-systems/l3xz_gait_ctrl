@@ -28,7 +28,7 @@
 #include <ros2_heartbeat/publisher/Publisher.h>
 #include <ros2_loop_rate_monitor/Monitor.h>
 
-#include <l3xz_gait_ctrl/kinematic/Engine.h>
+#include <l3xz_kinematic_engine/Engine.h>
 
 #include <l3xz_gait_ctrl/gait/GaitController.h>
 

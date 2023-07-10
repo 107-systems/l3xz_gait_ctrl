@@ -13,7 +13,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include <l3xz_gait_ctrl/kinematic/Engine.h>
+#include <l3xz_kinematic_engine/Engine.h>
 
 #include "../GaitControllerInput.h"
 #include "../GaitControllerOutput.h"

@@ -14,11 +14,6 @@ Gait controller for the L3X-Z electric/hydraulic hexapod robot.
 * [Coding a realtime Cartesian controller with KDL](http://library.isr.ist.utl.pt/docs/roswiki/pr2_mechanism(2f)Tutorials(2f)Coding(20)a(20)realtime(20)Cartesian(20)controller(20)with(20)KDL.html)
 
 #### How-to-build
-##### Install Dependencies:
-* [orocos-kdl](https://github.com/orocos/orocos_kinematics_dynamics):
-  * How-to-build from [source](https://github.com/orocos/orocos_kinematics_dynamics/blob/master/orocos_kdl/INSTALL.md)
-  * Install a [prebuilt](https://github.com/107-systems/orocos-kdl-debian) Debian package
-##### Build via `colcon`
 ```bash
 cd $COLCON_WS/src
 git clone https://github.com/107-systems/l3xz_gait_ctrl_gait_ctrl
