@@ -13,7 +13,7 @@
 
 #include <map>
 
-#include <l3xz_gait_ctrl/types/LegJoint.h>
+#include <l3xz/l3xz.h>
 
 /**************************************************************************************
  * NAMESPACE

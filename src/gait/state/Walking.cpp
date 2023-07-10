@@ -12,7 +12,7 @@
 
 #include <l3xz_gait_ctrl/gait/state/Standing.h>
 
-#include <l3xz_gait_ctrl/const/LegList.h>
+#include <l3xz/l3xz.h>
 
 #include <l3xz_gait_ctrl/types/Point3D.h>
 
