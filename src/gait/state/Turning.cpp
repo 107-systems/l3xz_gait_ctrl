@@ -48,17 +48,24 @@ std::tuple<StateBase *, ControllerOutput> Turning::update(kinematic::Engine cons
     double const tibia_deg_actual = input.get_angle_deg(leg, Joint::Tibia);
     const auto lt = Walking::getLegTraits(leg);
     const auto pos = Walking::sampleFootTrajectory(lt, (lt.is_left == _left) ? +_phase : -_phase);
-    kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
-                                               coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
-    auto const ik_output = engine.ik_solve(ik_input);
-    if (!ik_output.has_value()) {
+
+    try
+    {
+      kinematic::IK_Input const ik_input(pos(0), pos(1), pos(2),
+                                         coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
+
+      auto const ik_output = engine.ik_solve(ik_input);
+
+      next_output.set_angle_deg(leg, Joint::Coxa,  ik_output.coxa_angle_deg ());
+      next_output.set_angle_deg(leg, Joint::Femur, ik_output.femur_angle_deg());
+      next_output.set_angle_deg(leg, Joint::Tibia, ik_output.tibia_angle_deg());
+    }
+    catch (l3xz::kinematic::IK_Exception const & e)
+    {
       RCLCPP_ERROR(_logger, "Turning::update, engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
         pos(0), pos(1), pos(2), coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
       return {this, next_output};
     }
-    next_output.set_angle_deg(leg, Joint::Coxa,  ik_output.value().coxa_angle_deg ());
-    next_output.set_angle_deg(leg, Joint::Femur, ik_output.value().femur_angle_deg());
-    next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().tibia_angle_deg());
   }
   _phase += PHASE_INCREMENT;
   return std::tuple((_phase < 1.0F) ? this : static_cast<StateBase*>(new Standing(_logger, _clock)), next_output);

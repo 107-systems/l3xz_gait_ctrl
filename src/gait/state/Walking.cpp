@@ -72,18 +72,28 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
     Point3D const tip_target = std::make_tuple(pos(0), pos(1), pos(2));
     auto const [target_x, target_y, target_z] = tip_target;
 
-    kinematic::IK_Input const ik_input(target_x,
-                                       target_y,
-                                       target_z,
-                                       coxa_deg_actual,
-                                       femur_deg_actual,
-                                       tibia_deg_actual);
-    auto const ik_output = engine.ik_solve(ik_input);
+    try
+    {
+      kinematic::IK_Input const ik_input(target_x,
+                                         target_y,
+                                         target_z,
+                                         coxa_deg_actual,
+                                         femur_deg_actual,
+                                         tibia_deg_actual);
 
-    if (!ik_output.has_value())
+      /* Perform IK calculation. */
+      auto const ik_output = engine.ik_solve(ik_input);
+
+      /* Set output to the angle actuators. */
+      next_output.set_angle_deg(leg, Joint::Coxa,  ik_output.coxa_angle_deg ());
+      next_output.set_angle_deg(leg, Joint::Femur, ik_output.femur_angle_deg());
+      next_output.set_angle_deg(leg, Joint::Tibia, ik_output.tibia_angle_deg());
+    }
+    catch (l3xz::kinematic::IK_Exception const & e)
     {
       RCLCPP_ERROR(_logger,
-                   "engine.ik_solve failed for (%0.2f, %0.2f, %0.2f / %0.2f, %0.2f, %0.2f)",
+                   "engine.ik_solve failed with %s\n\ttarget = (%0.2f, %0.2f, %0.2f)\n\tactual = (%0.2f, %0.2f, %0.2f)",
+                   e.what(),
                    target_x,
                    target_y,
                    target_z,
@@ -93,28 +103,36 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
       return {this, next_output};
     }
 
-    /* Set output to the angle actuators. */
-    next_output.set_angle_deg(leg, Joint::Coxa,  ik_output.value().coxa_angle_deg ());
-    next_output.set_angle_deg(leg, Joint::Femur, ik_output.value().femur_angle_deg());
-    next_output.set_angle_deg(leg, Joint::Tibia, ik_output.value().tibia_angle_deg());
-
     /* Check if target position has been reached: First calculate
      * the Euclidean distance between the actual and the target position.
      */
-    kinematic::FK_Input const fk_input(coxa_deg_actual, femur_deg_actual, tibia_deg_actual);
-    auto const fk_output = engine.fk_solve(fk_input);
+    Point3D tip_actual = std::make_tuple(0.0f, 0.0f, 0.0f);
+    try
+    {
+      kinematic::FK_Input const fk_input(coxa_deg_actual,
+                                         femur_deg_actual,
+                                         tibia_deg_actual);
 
-    if (!fk_output.has_value())
+      auto const fk_output = engine.fk_solve(fk_input);
+
+      tip_actual = std::make_tuple(
+        fk_output.tibia_tip_x(),
+        fk_output.tibia_tip_y(),
+        fk_output.tibia_tip_z());
+    }
+    catch (l3xz::kinematic::FK_Exception const & e)
     {
       RCLCPP_ERROR(_logger,
-                   "engine.fk_solve failed for (%0.2f, %0.2f, %0.2f)",
+                   "engine.fk_solve failed with %s\n\tcoxa / femur / tibia = (%0.2f, %0.2f, %0.2f)",
+                   e.what(),
                    coxa_deg_actual,
                    femur_deg_actual,
                    tibia_deg_actual);
       return {this, next_output};
     }
 
-    float const target_err = fabs(fk_output.value().tibia_tip_z() - target_z);
+    auto const [actual_x, actual_y, actual_z] = tip_actual;
+    float const target_err = fabs(actual_z - target_z);
 
     if (target_err > 10.0f)
     {
@@ -125,9 +143,9 @@ std::tuple<StateBase *, ControllerOutput> Walking::update(kinematic::Engine cons
                            target_x,
                            target_y,
                            target_z,
-                           fk_output.value().tibia_tip_x(),
-                           fk_output.value().tibia_tip_y(),
-                           fk_output.value().tibia_tip_z(),
+                           actual_x,
+                           actual_y,
+                           actual_z,
                            target_err);
 
       all_target_positions_reached = false;
